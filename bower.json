@@ -1,0 +1,32 @@
+{
+  "name": "simple-calendar",
+  "version": "0.0.1",
+  "homepage": "https://github.com/mycolorway/simple-sample",
+  "authors": [
+    "farthinker <farthinker@gmail.com>"
+  ],
+  "description": "A simple calendar component",
+  "main": "lib/calendar.js",
+  "keywords": [
+    "sample"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "spec",
+    "node_modules",
+    "vendor",
+    "Gemfile",
+    "Gemfile.lock",
+    "Gruntfile.coffee",
+    "package.json",
+    "README.md",
+    "umd.hbs"
+  ],
+  "dependencies": {
+    "jquery": "2.x",
+    "moment": "2.x",
+    "simple-module": "2.x"
+  }
+}
+

@@ -1,0 +1,24 @@
+{
+  "name": "simple-calendar",
+  "version": "0.0.1",
+  "description": "A simple calendar component",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:mycolorway/simple-calendar.git"
+  },
+  "author": "farthinker",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mycolorway/simple-calendar/issues"
+  },
+  "homepage": "https://github.com/mycolorway/simple-calendar",
+  "devDependencies": {
+    "grunt": "0.x",
+    "grunt-contrib-watch": "0.x",
+    "grunt-contrib-coffee": "0.x",
+    "grunt-contrib-sass": "0.x",
+    "grunt-contrib-jasmine": "0.x",
+    "grunt-umd": "2.x"
+  }
+}
+

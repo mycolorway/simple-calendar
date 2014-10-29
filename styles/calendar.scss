@@ -1,0 +1,229 @@
+.simple-calendar {
+  position: relative;
+  background: #ffffff;
+
+  .week-title {
+    display: table;
+    table-layout: fixed;
+    width: 100%;
+
+    .weekdays {
+      display: table-row;
+
+      .weekday {
+        display: table-cell;
+        width: 14.286%;
+        height: 12px;
+        border-bottom: 2px solid #cccccc;
+        line-height: 12px;
+        font-size: 12px;
+        padding: 0 0 5px 0;
+        color: #aaaaaa;
+        text-align: center;
+
+        &.weekend {
+          color: #b81818;
+        }
+      }
+    }
+  }
+
+  .weeks {
+    .week {
+      display: table;
+      table-layout: fixed;
+      width: 100%;
+      border-bottom: 1px solid #dddddd;
+      position: relative;
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      .days {
+        display: table-row;
+
+        .day {
+          display: table-cell;
+          width: 14.286%;
+          height: 110px;
+          border-right: 1px solid #dddddd;
+          vertical-align: top;
+
+          &:last-of-type {
+            border-right: none;
+          }
+
+          .info {
+            height: 12px;
+            padding: 6px 8px;
+            font-size: 12px;
+            line-height: 12px;
+            color: #888888;
+            font-family: arial;
+
+            .num {
+              float: right;
+            }
+
+            .desc {
+              float: left;
+            }
+          }
+
+          &.sun, &.sat {
+            .info {
+              color: #c43515;
+            }
+          }
+
+          &.other-month {
+            .info {
+              color: #bbbbbb;
+            }
+          }
+
+          &.today {
+            background: #fdedb9;
+            .info {
+              color: #666666;
+            }
+
+            .day-events .cal-event:hover {
+              background: #f0e6c2;
+            }
+
+            .day-todos .cal-todo:hover {
+              background: #f0e6c2;
+            }
+          }
+
+          .event-spacers {
+            .event-spacer {
+              height: 24px;
+              width: 100%;
+            }
+          }
+
+          .day-events {
+            display: none;
+            margin: 0 0 10px 0;
+
+            .event {
+              margin: 3px 0;
+              position: relative;
+              cursor: pointer;
+
+              .content {
+                font-size: 12px;
+                line-height: 16px;
+                padding: 0 5px 0 10px;
+                margin: 0;
+                word-wrap: break-word;
+
+                &:before {
+                  content: "•";
+                  font-size: 12px;
+                  position: absolute;
+                  top: 1px;
+                  left: 3px;
+                }
+              }
+
+              &.loading .event-content {
+                opacity: 0.6;
+              }
+
+              &:hover {
+                background: #f3f3f3;
+              }
+            }
+          }
+
+          .day-todos {
+            display: none;
+            padding: 5px 0 10px 0;
+            margin: 5px 2px 0 4px;
+            border-top: 1px dotted #dddddd;
+
+            .cal-todo {
+              margin: 0 0 2px 0;
+              position: relative;
+
+              input {
+                cursor: pointer;
+                position: absolute;
+                top: 1px;
+                left: 1px;
+              }
+
+              .todo-content {
+                padding: 1px 0 1px 18px;
+                font-size: 12px;
+                line-height: 16px;
+                cursor: pointer;
+              }
+
+              &.completed .todo-content {
+                text-decoration: line-through;
+              }
+
+              &:hover {
+                background: #f6f6f6;
+              }
+
+              &.loading {
+                opacity: 0.6;
+              }
+            }
+          }
+        }
+      }
+
+      .events {
+        width: 100%;
+        position: absolute;
+        top: 24px;
+        left: 0;
+
+        .event {
+          margin: 0 0 0 0;
+          background: #aaaaaa;
+          cursor: pointer;
+          position: absolute;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+
+          .content {
+            color: #fff;
+            font-size: 12px;
+            line-height: 20px;
+            padding: 0 9px;
+            margin: 0 2px;
+            height: 20px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+          }
+
+          &.start .event-content {
+            border-top-left-radius: 10px;
+            border-bottom-left-radius: 10px;
+          }
+
+          &.end .event-content {
+            border-top-right-radius: 10px;
+            border-bottom-right-radius: 10px;
+          }
+
+          &.placeholder .event-content,
+          &.loading .event-content {
+            opacity: 0.6;
+          }
+        }
+      }
+    }
+  }
+}
+

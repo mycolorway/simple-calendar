@@ -53,7 +53,7 @@ class Calendar extends SimpleModule
     @el = $(@opts.el)
     throw Error('simple calendar: el option is required') if @el.length < 1
 
-    @month = moment(@opts.month)
+    @month = moment(@opts.month, 'YYYY-MM')
     throw Error('simple calendar: month option is required') unless @month.isValid()
 
     @_render()
@@ -303,6 +303,7 @@ class Calendar extends SimpleModule
 
       $event.find('.content').text event.content
       $event.appendTo $week.find('.events')
+      events.push $event[0]
 
       # render event placeholders
       for $day in days
@@ -316,9 +317,9 @@ class Calendar extends SimpleModule
             $spacer = $('<div class="event-spacer"></div>').appendTo($spacerList)
             $spacer.attr("data-#{@opts.idKey}", event[@opts.idKey])
 
-    @trigger 'eventrender', [event, $event]
-    @opts.onEventRender.call(@, event, $event) if $.isFunction(@opts.onEventRender)
-    $event
+    @trigger 'eventrender', [event, $(events)]
+    @opts.onEventRender.call(@, event, $(events)) if $.isFunction(@opts.onEventRender)
+    $(events)
 
 
 

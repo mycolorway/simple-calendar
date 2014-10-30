@@ -57,7 +57,13 @@ $(function() {
           completed: true,
           content: 'todo 2',
           due: '2014-10-28T14:20:00'
-        }]
+        }],
+        onEventRender: function(event, $event) {
+            var $content = $event.find('.content');
+            $('<span class="start-time"></span>')
+                .text('[' + event.start.format('H:M') + '] ')
+                .prependTo($content);
+        }
     });
 
     calendar.on('dayclick', function(e, $day) {

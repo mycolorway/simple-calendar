@@ -9,6 +9,46 @@ class Calendar extends SimpleModule
     eventHeight: 24
     idKey: 'id'
 
+  _tpl:
+    layout: '''
+      <div class="week-title">
+        <div class="weekdays"></div>
+      </div>
+      <div class="weeks"></div>
+    '''
+    week: '''
+      <div class="week">
+        <div class="days"></div>
+        <div class="events"></div>
+      </div>
+    '''
+    day: '''
+      <div class="day">
+        <div class="info">
+          <span class="desc"></span>
+          <span class="num"></span>
+        </div>
+        <div class="event-spacers"></div>
+        <div class="day-events"></div>
+        <div class="day-todos"></div>
+      </div>
+    '''
+    event: '''
+      <div class="event">
+        <div class="event-wrapper">
+          <p class="content"></p>
+        </div>
+      </div>
+    '''
+    todo: '''
+      <div class="todo">
+        <div class="todo-wrapper">
+          <input type="checkbox" class="cb-done" />
+          <span class="content"></span>
+        </div>
+      </div>
+    '''
+
   _init: ->
     @el = $(@opts.el)
     throw Error('simple calendar: el option is required') if @el.length < 1
@@ -28,8 +68,9 @@ class Calendar extends SimpleModule
 
   _render: ->
     @el.addClass('simple-calendar')
-    @titleEl = $('<div class="week-title"></div>')
-    @weekdaysEl = $('<div class="weekdays"></div>').appendTo(@titleEl)
+    $(@_tpl.layout).appendTo(@el)
+    @titleEl = @el.find('.week-title')
+    @weekdaysEl = @el.find('.weekdays')
     for i in [0..6]
       $('<div class="weekday"></div>')
         .text(moment().weekday(i).format('ddd'))
@@ -42,32 +83,16 @@ class Calendar extends SimpleModule
     weekEnd = @month.clone().endOf('week')
 
     while @month.isSame(weekStart, 'month') || @month.isSame(weekEnd, 'month')
-      $week = $("""
-        <div class="week" data-week="#{weekStart.format('YYYY-MM-DD')}">
-          <div class="days">
-          </div>
-          <div class="events">
-          </div>
-        </div>
-      """)
+      $week = $(@_tpl.week).attr
+        'data-week': weekStart.format 'YYYY-MM-DD'
       $days = $week.find('.days')
 
       for i in [0..6]
         date = weekStart.clone().weekday(i)
-        $day = $("""
-          <div class="day" data-date="#{date.format('YYYY-MM-DD')}">
-            <div class="info">
-              <span class="desc"></span>
-              <span class="num">#{date.date()}</span>
-            </div>
-            <div class="event-spacers">
-            </div>
-            <div class="day-events">
-            </div>
-            <div class="day-todos">
-            </div>
-          </div>
-        """).appendTo($days)
+        $day = $(@_tpl.day).attr
+          'data-date': date.format 'YYYY-MM-DD'
+        $day.find('.num').text date.date()
+        $day.appendTo $days
 
         if date.isSame today
           $day.addClass('today')
@@ -81,6 +106,8 @@ class Calendar extends SimpleModule
 
         unless date.isSame(@month, 'month')
           $day.addClass('other-month')
+
+        @opts.onDayRender.call(@, date, $day) if $.isFunction(@opts.onDayRender)
 
       @weeksEl.append $week
       weekStart.add '1', 'w'
@@ -96,7 +123,27 @@ class Calendar extends SimpleModule
       @trigger 'dayclick', [$(e.currentTarget)]
 
     @el.on 'click.calendar', '.event', (e) =>
-      @trigger 'eventclick', [$(e.currentTarget)]
+      $event = $(e.currentTarget)
+      event = $event.data 'event'
+      @trigger 'eventclick', [event, $event]
+      false
+
+    @el.on 'click.calendar', '.todo', (e) =>
+      $todo = $(e.currentTarget)
+      todo = $todo.data 'todo'
+      @trigger 'todoclick', [todo, $todo]
+      false
+
+    @el.on 'click.calendar', '.todo .cb-done', (e) =>
+      e.stopPropagation()
+      $cb = $(e.currentTarget)
+      $todo = $cb.closest('.todo')
+      todo = $todo.data 'todo'
+
+      todo.completed = $cb.prop 'checked'
+      $todo.toggleClass 'completed', todo.completed
+
+      @trigger 'todocomplete', [todo, $todo]
 
     @el.on 'mouseenter.calendar', '.event', (e) =>
       $event = $(e.currentTarget)
@@ -108,10 +155,8 @@ class Calendar extends SimpleModule
       id = $event.data @opts.idKey
       @el.find(".event[data-#{@opts.idKey}=#{id}]").removeClass('hover')
 
-  addEvent: (event) ->
-    @addEvents [event]
-
-  addEvents: (events) ->
+  addEvent: (events) ->
+    events = [events] unless $.isArray(events)
     for event in events
       event.start = moment event.start
       event.end = moment event.end
@@ -121,6 +166,9 @@ class Calendar extends SimpleModule
       e1.start.diff e2.start
 
     @renderEvents()
+
+  clearEvents: ->
+    @events.length = 0
 
   renderEvents: ->
     @el.find( ".week .events" ).empty()
@@ -137,17 +185,13 @@ class Calendar extends SimpleModule
     $day = @el.find ".day[data-date=#{event.start.format('YYYY-MM-DD')}]"
     $events = $day.find('.day-events').show()
 
-    $event = $("""
-      <div class="event" data-id="#{event[@opts.idKey]}">
-        <div class="event-wrapper">
-          <p class="content">#{event.content}</p>
-        </div>
-      </div>
-    """).appendTo($events)
+    $event = $(@_tpl.event).attr "data-#{@opts.idKey}", event[@opts.idKey]
+      .data 'event', event
+    $event.find('.content').text event.content
+    $event.appendTo $events
 
     @trigger 'eventrender', [event, $event]
-    @opts.onEventRender(event, $event) if $.isFunction(@opts.onEventRender)
-    $event.data 'event', event
+    @opts.onEventRender.call(@, event, $event) if $.isFunction(@opts.onEventRender)
 
   _renderEventAcrossDay: (event) ->
     dayCount = event.end.diff(event.start, 'd')
@@ -180,22 +224,19 @@ class Calendar extends SimpleModule
       break unless occupied
       slot += 1
 
-
     events = []
     for week, days of rows
       $week = @el.find ".week[data-week=#{week}]"
-      $event = $("""
-        <div class="event" data-id="#{event[@opts.idKey]}">
-          <div class="event-wrapper">
-            <p class="content">#{event.content}</p>
-          </div>
-        </div>
-      """).css
+
+      $event = $(@_tpl.event).attr "data-#{@opts.idKey}", event[@opts.idKey]
+      .css
         width: days.length / 7 * 100 + '%'
         top: @opts.eventHeight * slot
         left: $week.find('.day').index(days[0]) / 7 * 100 + '%'
       .data 'event', event
-      .appendTo($week.find('.events'))
+
+      $event.find('.content').text event.content
+      $event.appendTo $week.find('.events')
 
       # render event placeholders
       for $day in days
@@ -210,7 +251,39 @@ class Calendar extends SimpleModule
             $spacer.attr("data-#{@opts.idKey}", event[@opts.idKey])
 
     @trigger 'eventrender', [event, $event]
-    @opts.onEventRender(event, $event) if $.isFunction(@opts.onEventRender)
+    @opts.onEventRender.call(@, event, $event) if $.isFunction(@opts.onEventRender)
+
+  addTodo: (todos) ->
+    todos = [todos] unless $.isArray todos
+
+    for todo in todos
+      todo.due = moment todo.due
+      @todos.push todo
+
+    @todos.sort (t1, t2) ->
+      t1.due.diff t2.due
+
+    @renderTodos()
+
+  clearTodos: ->
+    @todos.length = 0
+
+  renderTodos: ->
+    @el.find( ".day .day-todos" ).empty()
+
+    for todo in @todos
+      $todoList = @el.find(".day[data-date=#{todo.due.format('YYYY-MM-DD')}] .day-todos")
+      $todo = $(@_tpl.todo).attr "data-#{@opts.idKey}", todo[@opts.idKey]
+        .data 'todo', todo
+      $todo.find('.content').text todo.content
+      $todoList.append($todo).show()
+
+      if todo.completed
+        $todo.addClass('completed')
+        $todo.find('.cb-done').prop('checked', todo.completed)
+
+      @trigger 'todorender', [todo, $todo]
+      @opts.onTodoRender.call(@, todo, $todo) if $.isFunction(@opts.onTodoRender)
 
 
 calendar = (opts) ->

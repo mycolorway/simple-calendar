@@ -119,29 +119,24 @@
   margin: 5px 2px 0 4px;
   border-top: 1px dotted #dddddd;
 }
-.simple-calendar .weeks .week .days .day .day-todos .cal-todo {
-  margin: 0 0 2px 0;
+.simple-calendar .weeks .week .days .day .day-todos .todo {
+  padding: 2px 0;
   position: relative;
-}
-.simple-calendar .weeks .week .days .day .day-todos .cal-todo input {
   cursor: pointer;
-  position: absolute;
-  top: 1px;
-  left: 1px;
 }
-.simple-calendar .weeks .week .days .day .day-todos .cal-todo .todo-content {
-  padding: 1px 0 1px 18px;
-  font-size: 12px;
+.simple-calendar .weeks .week .days .day .day-todos .todo .todo-wrapper {
   line-height: 16px;
-  cursor: pointer;
 }
-.simple-calendar .weeks .week .days .day .day-todos .cal-todo.completed .todo-content {
+.simple-calendar .weeks .week .days .day .day-todos .todo .content {
+  font-size: 12px;
+}
+.simple-calendar .weeks .week .days .day .day-todos .todo.completed .content {
   text-decoration: line-through;
 }
-.simple-calendar .weeks .week .days .day .day-todos .cal-todo:hover {
+.simple-calendar .weeks .week .days .day .day-todos .todo:hover {
   background: #f6f6f6;
 }
-.simple-calendar .weeks .week .days .day .day-todos .cal-todo.loading {
+.simple-calendar .weeks .week .days .day .day-todos .todo.loading {
   opacity: 0.6;
 }
 .simple-calendar .weeks .week .events {

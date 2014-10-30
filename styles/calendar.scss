@@ -149,25 +149,20 @@ $event-height: 24px;
             margin: 5px 2px 0 4px;
             border-top: 1px dotted #dddddd;
 
-            .cal-todo {
-              margin: 0 0 2px 0;
+            .todo {
+              padding: 2px 0;
               position: relative;
+              cursor: pointer;
 
-              input {
-                cursor: pointer;
-                position: absolute;
-                top: 1px;
-                left: 1px;
-              }
-
-              .todo-content {
-                padding: 1px 0 1px 18px;
-                font-size: 12px;
+              .todo-wrapper {
                 line-height: 16px;
-                cursor: pointer;
               }
 
-              &.completed .todo-content {
+              .content {
+                font-size: 12px;
+              }
+
+              &.completed .content {
                 text-decoration: line-through;
               }
 

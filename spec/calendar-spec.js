@@ -11,8 +11,8 @@
       expect(calendar.el.hasClass('simple-calendar')).toBe(true);
       return expect(calendar.el.find('.day:not(.other-month)').length).toBe(31);
     });
-    it('should render event', function() {
-      calendar.addEvents([
+    it('should render events', function() {
+      calendar.addEvent([
         {
           id: 1,
           start: '2014-10-10T14:20:00',
@@ -39,14 +39,8 @@
       expect(calendar.el.find('.event:contains(event 2)').length).toBe(1);
       return expect(calendar.el.find('.event:contains(event 3)').length).toBe(1);
     });
-    return it('should trigger click event', function() {
+    it('should trigger click event', function() {
       var $day, $event, dayClickCallback, eventClickCallback;
-      calendar.addEvent({
-        id: 1,
-        start: '2014-10-10T14:20:00',
-        end: '2014-10-13T14:20:00',
-        content: 'event 1'
-      });
       dayClickCallback = jasmine.createSpy('dayClickCallback');
       eventClickCallback = jasmine.createSpy('eventClickCallback');
       calendar.on('dayclick', function(e, $day) {
@@ -61,6 +55,23 @@
       $event = calendar.el.find('.event:first').click();
       expect(dayClickCallback).toHaveBeenCalledWith($day[0]);
       return expect(eventClickCallback).toHaveBeenCalledWith($event[0]);
+    });
+    return it('should render todos', function() {
+      calendar.addTodo([
+        {
+          id: 1,
+          completed: false,
+          content: 'todo 1',
+          due: '2014-10-28T14:20:00'
+        }, {
+          id: 2,
+          completed: true,
+          content: 'todo 2',
+          due: '2014-10-28T14:20:00'
+        }
+      ]);
+      expect(calendar.el.find('.todo:contains(todo 1)').length).toBe(1);
+      return expect(calendar.el.find('.todo:contains(todo 2)').length).toBe(1);
     });
   });
 

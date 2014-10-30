@@ -1,14 +1,80 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Simple Sample Demo</title>
+    <title>Simple Calendar Demo</title>
     <meta charset="utf-8" />
+
+    <link media="all" rel="stylesheet" type="text/css" href="styles/calendar.css" />
+
 </head>
 
 <body>
 
 <div class="wrapper">
+    <div id="calendar">
+    </div>
 </div>
+
+<script type="text/javascript" src="vendor/bower/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript" src="vendor/bower/moment/moment.js"></script>
+<script type="text/javascript" src="vendor/bower/moment/locale/zh-cn.js"></script>
+<script type="text/javascript" src="vendor/bower/simple-module/lib/module.js"></script>
+<script type="text/javascript" src="lib/calendar.js"></script>
+<script type="text/javascript">
+
+$(function() {
+    var calendar = simple.calendar({
+        month: '2014-10',
+        el: '#calendar',
+        events: [{
+          id: 1,
+          start: '2014-10-10T14:20:00',
+          end: '2014-10-13T14:20:00',
+          content: 'event 1'
+        }, {
+          id: 2,
+          start: '2014-10-11T14:20:00',
+          end: '2014-10-12T14:20:00',
+          content: 'event 2'
+        }, {
+          id: 3,
+          start: '2014-10-10T14:20:00',
+          end: '2014-10-10T16:20:00',
+          content: 'event 3'
+        }, {
+          id: 4,
+          start: '2014-10-10T15:20:00',
+          end: '2014-10-10T17:20:00',
+          content: 'event 4'
+        }],
+        todos: [{
+          id: 1,
+          completed: false,
+          content: 'todo 1',
+          due: '2014-10-28T14:20:00'
+        }, {
+          id: 2,
+          completed: true,
+          content: 'todo 2',
+          due: '2014-10-28T14:20:00'
+        }]
+    });
+
+    calendar.on('dayclick', function(e, $day) {
+        var date = moment($day.data('date'));
+        alert('click on day: ' + date.format('YYYY-MM-DD'));
+    });
+
+    calendar.on('eventclick', function(e, event, $event) {
+        alert('click on event: ' + event.content);
+    });
+
+    calendar.on('todoclick', function(e, todo, $todo) {
+        alert('click on todo: ' + todo.content);
+    });
+});
+
+</script>
 
 </body>
 

@@ -11,8 +11,8 @@ describe 'Simple Calendar', ->
     expect(calendar.el.hasClass('simple-calendar')).toBe(true)
     expect(calendar.el.find('.day:not(.other-month)').length).toBe(31)
 
-  it 'should render event', ->
-    calendar.addEvents [{
+  it 'should render events', ->
+    calendar.addEvent [{
       id: 1,
       start: '2014-10-10T14:20:00',
       end: '2014-10-13T14:20:00',
@@ -39,12 +39,6 @@ describe 'Simple Calendar', ->
     expect(calendar.el.find('.event:contains(event 3)').length).toBe(1)
 
   it 'should trigger click event', ->
-    calendar.addEvent
-      id: 1,
-      start: '2014-10-10T14:20:00',
-      end: '2014-10-13T14:20:00',
-      content: 'event 1'
-
     dayClickCallback = jasmine.createSpy 'dayClickCallback'
     eventClickCallback = jasmine.createSpy 'eventClickCallback'
 
@@ -61,3 +55,21 @@ describe 'Simple Calendar', ->
 
     expect(dayClickCallback).toHaveBeenCalledWith($day[0])
     expect(eventClickCallback).toHaveBeenCalledWith($event[0])
+
+  it 'should render todos', ->
+    calendar.addTodo [{
+      id: 1,
+      completed: false,
+      content: 'todo 1',
+      due: '2014-10-28T14:20:00'
+    }, {
+      id: 2,
+      completed: true,
+      content: 'todo 2',
+      due: '2014-10-28T14:20:00'
+    }]
+
+    expect(calendar.el.find('.todo:contains(todo 1)').length).toBe(1)
+    expect(calendar.el.find('.todo:contains(todo 2)').length).toBe(1)
+ 
+

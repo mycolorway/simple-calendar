@@ -1,3 +1,6 @@
+
+$event-height: 24px;
+
 .simple-calendar {
   position: relative;
   background: #ffffff;
@@ -100,7 +103,7 @@
 
           .event-spacers {
             .event-spacer {
-              height: 24px;
+              height: $event-height;
               width: 100%;
             }
           }
@@ -110,14 +113,14 @@
             margin: 0 0 10px 0;
 
             .event {
-              margin: 3px 0;
+              padding: 2px 0;
               position: relative;
               cursor: pointer;
 
               .content {
                 font-size: 12px;
                 line-height: 16px;
-                padding: 0 5px 0 10px;
+                padding: 0 5px 0 12px;
                 margin: 0;
                 word-wrap: break-word;
 
@@ -125,8 +128,8 @@
                   content: "•";
                   font-size: 12px;
                   position: absolute;
-                  top: 1px;
-                  left: 3px;
+                  top: 3px;
+                  left: 5px;
                 }
               }
 
@@ -188,24 +191,29 @@
 
         .event {
           margin: 0 0 0 0;
-          background: #aaaaaa;
           cursor: pointer;
           position: absolute;
           overflow: hidden;
           white-space: nowrap;
           text-overflow: ellipsis;
 
-          .content {
-            color: #fff;
-            font-size: 12px;
-            line-height: 20px;
-            padding: 0 9px;
-            margin: 0 2px;
-            height: 20px;
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
+          .event-wrapper {
+            height: $event-height - 4px;
+            margin: 0 3px;
+            background: #aaaaaa;
+
+            .content {
+              color: #fff;
+              font-size: 12px;
+              line-height: $event-height - 4px;
+              padding: 0 9px;
+              margin: 0;
+              overflow: hidden;
+              white-space: nowrap;
+              text-overflow: ellipsis;
+            }
           }
+
 
           &.start .event-content {
             border-top-left-radius: 10px;

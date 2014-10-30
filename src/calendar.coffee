@@ -6,6 +6,7 @@ class Calendar extends SimpleModule
     month: '' # required, moment obj or date string
     events: null
     todos: null
+    eventHeight: 24
     idKey: 'id'
 
   _init: ->
@@ -138,7 +139,9 @@ class Calendar extends SimpleModule
 
     $event = $("""
       <div class="event" data-id="#{event[@opts.idKey]}">
-        <p class="content">#{event.content}</p>
+        <div class="event-wrapper">
+          <p class="content">#{event.content}</p>
+        </div>
       </div>
     """).appendTo($events)
 
@@ -183,11 +186,13 @@ class Calendar extends SimpleModule
       $week = @el.find ".week[data-week=#{week}]"
       $event = $("""
         <div class="event" data-id="#{event[@opts.idKey]}">
-          <p class="content">#{event.content}</p>
+          <div class="event-wrapper">
+            <p class="content">#{event.content}</p>
+          </div>
         </div>
       """).css
         width: days.length / 7 * 100 + '%'
-        top: 24 * slot
+        top: @opts.eventHeight * slot
         left: $week.find('.day').index(days[0]) / 7 * 100 + '%'
       .data 'event', event
       .appendTo($week.find('.events'))

@@ -20,13 +20,24 @@
           content: 'event 1'
         }, {
           id: 2,
+          start: '2014-10-11T14:20:00',
+          end: '2014-10-12T14:20:00',
+          content: 'event 2'
+        }, {
+          id: 3,
           start: '2014-10-10T14:20:00',
           end: '2014-10-10T16:20:00',
-          content: 'event 2'
+          content: 'event 3'
+        }, {
+          id: 4,
+          start: '2014-10-10T15:20:00',
+          end: '2014-10-10T17:20:00',
+          content: 'event 4'
         }
       ]);
       expect(calendar.el.find('.event:contains(event 1)').length).toBe(2);
-      return expect(calendar.el.find('.event:contains(event 2)').length).toBe(1);
+      expect(calendar.el.find('.event:contains(event 2)').length).toBe(1);
+      return expect(calendar.el.find('.event:contains(event 3)').length).toBe(1);
     });
     return it('should trigger click event', function() {
       var $day, $event, dayClickCallback, eventClickCallback;

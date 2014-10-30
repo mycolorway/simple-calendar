@@ -89,14 +89,14 @@
   margin: 0 0 10px 0;
 }
 .simple-calendar .weeks .week .days .day .day-events .event {
-  margin: 3px 0;
+  padding: 2px 0;
   position: relative;
   cursor: pointer;
 }
 .simple-calendar .weeks .week .days .day .day-events .event .content {
   font-size: 12px;
   line-height: 16px;
-  padding: 0 5px 0 10px;
+  padding: 0 5px 0 12px;
   margin: 0;
   word-wrap: break-word;
 }
@@ -104,8 +104,8 @@
   content: "•";
   font-size: 12px;
   position: absolute;
-  top: 1px;
-  left: 3px;
+  top: 3px;
+  left: 5px;
 }
 .simple-calendar .weeks .week .days .day .day-events .event.loading .event-content {
   opacity: 0.6;
@@ -152,20 +152,23 @@
 }
 .simple-calendar .weeks .week .events .event {
   margin: 0 0 0 0;
-  background: #aaaaaa;
   cursor: pointer;
   position: absolute;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
-.simple-calendar .weeks .week .events .event .content {
+.simple-calendar .weeks .week .events .event .event-wrapper {
+  height: 20px;
+  margin: 0 3px;
+  background: #aaaaaa;
+}
+.simple-calendar .weeks .week .events .event .event-wrapper .content {
   color: #fff;
   font-size: 12px;
   line-height: 20px;
   padding: 0 9px;
-  margin: 0 2px;
-  height: 20px;
+  margin: 0;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;

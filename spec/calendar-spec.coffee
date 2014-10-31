@@ -128,4 +128,4 @@ describe 'Simple Calendar', ->
     expect(eventClickCallback).toHaveBeenCalledWith($event[0])
     expect(todoClickCallback).toHaveBeenCalledWith($todo[0])
     expect(todoCompleteCallback).toHaveBeenCalledWith($todo[0])
-    
+

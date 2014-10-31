@@ -7,7 +7,16 @@ class Calendar extends SimpleModule
     events: null
     todos: null
     eventHeight: 24
-    idKey: 'id'
+    eventKeys:
+      id: 'id'
+      start: 'start'
+      end: 'end'
+      content: 'content'
+    todoKeys:
+      id: 'id'
+      due: 'due'
+      completed: 'completed'
+      content: 'content'
 
   _tpl:
     layout: '''
@@ -149,23 +158,32 @@ class Calendar extends SimpleModule
 
     @el.on 'mouseenter.calendar', '.event', (e) =>
       $event = $(e.currentTarget)
-      id = $event.data @opts.idKey
-      @el.find(".event[data-#{@opts.idKey}=#{id}]").addClass('hover')
+      id = $event.data 'id'
+      @el.find(".event[data-id=#{id}]").addClass('hover')
 
     @el.on 'mouseenter.calendar', '.event', (e) =>
       $event = $(e.currentTarget)
-      id = $event.data @opts.idKey
-      @el.find(".event[data-#{@opts.idKey}=#{id}]").removeClass('hover')
+      id = $event.data 'id'
+      @el.find(".event[data-id=#{id}]").removeClass('hover')
 
   findEvent: (eventId) ->
-    eventId = if typeof eventId == 'object' then eventId[@opts.idKey] else eventId
     for e in $.merge([], @events.inDay, @events.acrossDay)
-      if e[@opts.idKey] == eventId
+      if e.id == eventId
         event = e
         break
     event
 
-  _processEvent: (event) ->
+  _processEvent: (originEvent) ->
+    return unless typeof originEvent == 'object'
+    return originEvent if originEvent.origin
+
+    event =
+      id: originEvent[@opts.eventKeys.id]
+      start: originEvent[@opts.eventKeys.start]
+      end: originEvent[@opts.eventKeys.end]
+      content: originEvent[@opts.eventKeys.content]
+      origin: originEvent
+
     event.start = moment(event.start) unless moment.isMoment(event.start)
     event.end = moment(event.end) unless moment.isMoment(event.end)
     event.acrossDay = event.end.diff(event.start, "d") > 0
@@ -178,7 +196,7 @@ class Calendar extends SimpleModule
     reorderList = []
 
     for event in events
-      @_processEvent event
+      event = @_processEvent event
       if event.acrossDay
         eventsAcrossDay.push event
       else
@@ -219,7 +237,13 @@ class Calendar extends SimpleModule
     @el.find( ".week .events" ).empty()
 
   removeEvent: (event) ->
-    return unless event = @findEvent event
+    if typeof event == 'object'
+      event = @_processEvent event
+      eventId = event.id
+    else
+      eventId = event
+
+    return unless event = @findEvent eventId
 
     if event.acrossDay
       @events.acrossDay.splice $.inArray(event, @events.acrossDay), 1
@@ -228,13 +252,13 @@ class Calendar extends SimpleModule
       @_renderEventAcrossDay e for e in @events.acrossDay
     else
       @events.inDay.splice $.inArray(event, @events.inDay), 1
-      @el.find(".event[data-#{@opts.idKey}=#{event[@opts.idKey]}]").remove()
+      @el.find(".event[data-id=#{event.id}]").remove()
 
   replaceEvent: (newEvent) ->
-    return unless event = @findEvent newEvent
+    newEvent = @_processEvent newEvent
+    return unless event = @findEvent newEvent.id
 
     $.extend event, newEvent
-    @_processEvent event
 
     if event.acrossDay
       @el.find( ".day .event-spacers" ).empty()
@@ -247,9 +271,9 @@ class Calendar extends SimpleModule
     $day = @el.find ".day[data-date=#{event.start.format('YYYY-MM-DD')}]"
     $eventList = $day.find('.day-events').show()
 
-    $event = @el.find(".event[data-#{@opts.idKey}=#{event[@opts.idKey]}]").remove()
+    $event = @el.find(".event[data-id=#{event.id}]").remove()
     unless $event.length > 0
-      $event = $(@_tpl.event).attr "data-#{@opts.idKey}", event[@opts.idKey]
+      $event = $(@_tpl.event).attr "data-id", event.id
 
     $event.data 'event', event
       .find('.content').text event.content
@@ -283,7 +307,7 @@ class Calendar extends SimpleModule
       for week, days of rows
         for $day in days
           $spacers = $day.find '.event-spacer'
-          if $spacers.length > slot and $spacers.eq(slot).is("[data-#{@opts.idKey}]")
+          if $spacers.length > slot and $spacers.eq(slot).is("[data-id]")
             occupied = true
             break
         break if occupied
@@ -294,7 +318,7 @@ class Calendar extends SimpleModule
     for week, days of rows
       $week = @el.find ".week[data-week=#{week}]"
 
-      $event = $(@_tpl.event).attr "data-#{@opts.idKey}", event[@opts.idKey]
+      $event = $(@_tpl.event).attr "data-id", event.id
       .css
         width: days.length / 7 * 100 + '%'
         top: @opts.eventHeight * slot
@@ -311,11 +335,11 @@ class Calendar extends SimpleModule
         $spacers = $spacerList.find '.event-spacer'
 
         if slot < $spacers.length
-          $spacers.eq(slot).attr("data-#{@opts.idKey}", event[@opts.idKey])
+          $spacers.eq(slot).attr("data-id", event.id)
         else
           for i in [0..slot - $spacers.length]
             $spacer = $('<div class="event-spacer"></div>').appendTo($spacerList)
-            $spacer.attr("data-#{@opts.idKey}", event[@opts.idKey])
+            $spacer.attr("data-id", event.id)
 
     @trigger 'eventrender', [event, $(events)]
     @opts.onEventRender.call(@, event, $(events)) if $.isFunction(@opts.onEventRender)
@@ -324,14 +348,23 @@ class Calendar extends SimpleModule
 
 
   findTodo: (todoId) ->
-    todoId = if typeof todoId == 'object' then todoId[@opts.idKey] else todoId
     for t in @todos
-      if t[@opts.idKey] == todoId
+      if t.id == todoId
         todo = t
         break
     todo
 
-  _processTodo: (todo) ->
+  _processTodo: (originTodo) ->
+    return unless typeof originTodo == 'object'
+    return originTodo if originTodo.origin
+
+    todo =
+      id: originTodo[@opts.todoKeys.id]
+      due: originTodo[@opts.todoKeys.due]
+      completed: originTodo[@opts.todoKeys.completed]
+      content: originTodo[@opts.todoKeys.content]
+      origin: originTodo
+
     todo.due = moment(todo.due) unless moment.isMoment(todo.due)
     todo
 
@@ -340,7 +373,7 @@ class Calendar extends SimpleModule
     reorderList = []
 
     for todo in todos
-      @_processTodo todo
+      todo = @_processTodo todo
       @todos.push todo
       $todo = @_renderTodo todo
       $todoList = $todo.parent()
@@ -359,12 +392,19 @@ class Calendar extends SimpleModule
       $todos.detach().appendTo list
 
   removeTodo: (todo) ->
-    return unless todo = @findTodo todo
+    if typeof todo == 'object'
+      todo = @_processTodo todo
+      todoId = todo.id
+    else
+      todoId = todo
+
+    return unless todo = @findTodo todoId
     @todos.splice $.inArray(todo, @todos), 1
-    @el.find(".todo[data-#{@opts.idKey}=#{todo[@opts.idKey]}]").remove()
+    @el.find(".todo[data-id=#{todo.id}]").remove()
 
   replaceTodo: (newTodo) ->
-    return unless todo = @findTodo newTodo
+    newTodo = @_processTodo newTodo
+    return unless todo = @findTodo newTodo.id
     $.extend todo, newTodo
     todo.due = moment(todo.due) unless moment.isMoment(todo.due)
     @_renderTodo todo
@@ -375,10 +415,10 @@ class Calendar extends SimpleModule
 
   _renderTodo: (todo)->
     $todoList = @el.find(".day[data-date=#{todo.due.format('YYYY-MM-DD')}] .day-todos")
-    $todo = @el.find(".todo[data-#{@opts.idKey}=#{todo[@opts.idKey]}]").remove()
+    $todo = @el.find(".todo[data-id=#{todo.id}]").remove()
 
     unless $todo.length > 0
-      $todo = $(@_tpl.todo).attr "data-#{@opts.idKey}", todo[@opts.idKey]
+      $todo = $(@_tpl.todo).attr "data-id", todo.id
 
     $todo.data 'todo', todo
       .toggleClass 'completed', todo.completed

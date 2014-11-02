@@ -1,34 +1,55 @@
 (function() {
   describe('Simple Calendar', function() {
     var calendar;
+    calendar = null;
     $('<div id="calendar"></div>').appendTo('body');
-    calendar = simple.calendar({
-      month: '2014-10',
-      el: '#calendar'
+    beforeEach(function() {
+      return calendar = simple.calendar({
+        month: '2014-10',
+        el: '#calendar',
+        events: [
+          {
+            id: 1,
+            start: '2014-10-10T14:20:00',
+            end: '2014-10-13T14:20:00',
+            content: 'event 1'
+          }, {
+            id: 2,
+            start: '2014-10-11T14:20:00',
+            end: '2014-10-12T14:20:00',
+            content: 'event 2'
+          }, {
+            id: 3,
+            start: '2014-10-10T14:20:00',
+            end: '2014-10-10T16:20:00',
+            content: 'event 3'
+          }
+        ],
+        todos: [
+          {
+            id: 1,
+            completed: false,
+            content: 'todo 1',
+            due: '2014-10-28T14:20:00'
+          }, {
+            id: 2,
+            completed: true,
+            content: 'todo 2',
+            due: '2014-10-28T14:20:00'
+          }
+        ]
+      });
+    });
+    afterEach(function() {
+      return calendar.destroy();
     });
     it('should render calendar grid', function() {
       expect(calendar.el.hasClass('simple-calendar')).toBe(true);
-      return expect(calendar.el.find('.day:not(.other-month)').length).toBe(31);
+      expect(calendar.el.find('.day:not(.other-month)').length).toBe(31);
+      expect(calendar.el.find('.day:first').data('date')).toBe('2014-09-29');
+      return expect(calendar.el.find('.day:last').data('date')).toBe('2014-11-02');
     });
-    it('should render events after adding them', function() {
-      calendar.addEvent([
-        {
-          id: 1,
-          start: '2014-10-10T14:20:00',
-          end: '2014-10-13T14:20:00',
-          content: 'event 1'
-        }, {
-          id: 2,
-          start: '2014-10-11T14:20:00',
-          end: '2014-10-12T14:20:00',
-          content: 'event 2'
-        }, {
-          id: 3,
-          start: '2014-10-10T14:20:00',
-          end: '2014-10-10T16:20:00',
-          content: 'event 3'
-        }
-      ]);
+    it('should render events', function() {
       expect(calendar.el.find('.event:contains(event 1)').length).toBeGreaterThan(0);
       expect(calendar.el.find('.event:contains(event 2)').length).toBeGreaterThan(0);
       return expect(calendar.el.find('.event:contains(event 3)').length).toBeGreaterThan(0);
@@ -56,20 +77,14 @@
       expect($event.find('.content').text()).toBe('modified event 3');
       return expect($event.closest('.day').is('[data-date=2014-10-05]')).toBe(true);
     });
+    it('should remove all events after calling clearEvents', function() {
+      calendar.clearEvents();
+      expect(calendar.events.inDay.length).toBe(0);
+      expect(calendar.events.acrossDay.length).toBe(0);
+      expect(calendar.el.find('.event').length).toBe(0);
+      return expect(calendar.el.find('.event-spacer').length).toBe(0);
+    });
     it('should render todos after adding them', function() {
-      calendar.addTodo([
-        {
-          id: 1,
-          completed: false,
-          content: 'todo 1',
-          due: '2014-10-28T14:20:00'
-        }, {
-          id: 2,
-          completed: true,
-          content: 'todo 2',
-          due: '2014-10-28T14:20:00'
-        }
-      ]);
       expect(calendar.el.find('.todo:contains(todo 1)').length).toBe(1);
       return expect(calendar.el.find('.todo:contains(todo 2)').length).toBe(1);
     });
@@ -96,8 +111,37 @@
       expect($todo.find('.content').text()).toBe('modified todo 2');
       return expect($todo.closest('.day').is('[data-date=2014-10-29]')).toBe(true);
     });
+    it('should remove all todos after calling clearTodos', function() {
+      calendar.clearTodos();
+      expect(calendar.todos.length).toBe(0);
+      return expect(calendar.el.find('.todo').length).toBe(0);
+    });
+    it('should rerender calendar grid and clear all events/todos after setting a new month', function() {
+      calendar.setMonth('2014-12');
+      expect(calendar.month.isSame(moment('2014-12', 'YYYY-MM'))).toBe(true);
+      expect(calendar.el.find('.day:first').data('date')).toBe('2014-12-01');
+      expect(calendar.el.find('.day:last').data('date')).toBe('2015-01-04');
+      expect(calendar.events.inDay.length).toBe(0);
+      expect(calendar.events.acrossDay.length).toBe(0);
+      expect(calendar.el.find('.event').length).toBe(0);
+      expect(calendar.el.find('.event-spacer').length).toBe(0);
+      expect(calendar.todos.length).toBe(0);
+      return expect(calendar.el.find('.todo').length).toBe(0);
+    });
     return it('should trigger custom event', function() {
       var $day, $event, $todo, dayClickCallback, eventClickCallback, todoClickCallback, todoCompleteCallback;
+      calendar.addEvent({
+        id: 1,
+        start: '2014-10-10T14:20:00',
+        end: '2014-10-13T14:20:00',
+        content: 'event 1'
+      });
+      calendar.addTodo({
+        id: 1,
+        completed: false,
+        content: 'todo 1',
+        due: '2014-10-28T14:20:00'
+      });
       dayClickCallback = jasmine.createSpy('dayClickCallback');
       eventClickCallback = jasmine.createSpy('eventClickCallback');
       todoClickCallback = jasmine.createSpy('todoClickCallback');

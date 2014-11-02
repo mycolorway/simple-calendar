@@ -78,7 +78,8 @@ class Calendar extends SimpleModule
       @addTodo @opts.todos
 
   _render: ->
-    @el.addClass('simple-calendar')
+    @el.addClass 'simple-calendar'
+      .data 'calendar', @
     $(@_tpl.layout).appendTo(@el)
     @titleEl = @el.find('.week-title')
     @weekdaysEl = @el.find('.weekdays')
@@ -89,6 +90,13 @@ class Calendar extends SimpleModule
 
     @weeksEl = $('<div class="weeks"></div>')
 
+    @el.append(@titleEl)
+      .append(@weeksEl)
+
+    @_renderGrid()
+    @_bind()
+
+  _renderGrid: ->
     today = moment().startOf('d')
     weekStart = @month.clone().startOf('week')
     weekEnd = @month.clone().endOf('week')
@@ -123,11 +131,6 @@ class Calendar extends SimpleModule
       @weeksEl.append $week
       weekStart.add '1', 'w'
       weekEnd.add '1', 'w'
-
-    @el.append(@titleEl)
-      .append(@weeksEl)
-
-    @_bind()
 
   _bind: ->
     @el.on 'click.calendar', '.day', (e) =>
@@ -231,7 +234,8 @@ class Calendar extends SimpleModule
       @_renderEventAcrossDay event for event in @events.acrossDay
 
   clearEvents: ->
-    @events.length = 0
+    @events.inDay.length = 0
+    @events.acrossDay.length = 0
     @el.find( ".day .event-spacers" ).empty()
     @el.find( ".day .day-events" ).empty()
     @el.find( ".week .events" ).empty()
@@ -406,7 +410,6 @@ class Calendar extends SimpleModule
     newTodo = @_processTodo newTodo
     return unless todo = @findTodo newTodo.id
     $.extend todo, newTodo
-    todo.due = moment(todo.due) unless moment.isMoment(todo.due)
     @_renderTodo todo
 
   clearTodos: ->
@@ -429,6 +432,24 @@ class Calendar extends SimpleModule
     @trigger 'todorender', [todo, $todo]
     @opts.onTodoRender.call(@, todo, $todo) if $.isFunction(@opts.onTodoRender)
     $todo
+
+
+  setMonth: (month) ->
+    @month = moment(month, 'YYYY-MM')
+    throw Error('simple calendar: month param should be YYYY-MM') unless @month.isValid()
+
+    @clearEvents()
+    @clearTodos()
+    @weeksEl.empty()
+    @_renderGrid()
+
+  destroy: ->
+    @clearEvents()
+    @clearTodos()
+    @el.off '.calendar'
+      .removeData 'calendar'
+      .removeClass 'simple-calendar'
+      .empty()
 
 
 calendar = (opts) ->

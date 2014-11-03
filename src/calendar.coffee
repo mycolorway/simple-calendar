@@ -273,7 +273,7 @@ class Calendar extends SimpleModule
 
   _renderEventInDay: (event) ->
     $day = @el.find ".day[data-date=#{event.start.format('YYYY-MM-DD')}]"
-    $eventList = $day.find('.day-events').show()
+    $eventList = $day.find('.day-events')
 
     $event = @el.find(".event[data-id=#{event.id}]").remove()
     unless $event.length > 0
@@ -427,7 +427,7 @@ class Calendar extends SimpleModule
       .toggleClass 'completed', todo.completed
     $todo.find('.content').text todo.content
     $todo.find('.cb-done').prop('checked', todo.completed)
-    $todoList.append($todo).show()
+    $todoList.append($todo)
 
     @trigger 'todorender', [todo, $todo]
     @opts.onTodoRender.call(@, todo, $todo) if $.isFunction(@opts.onTodoRender)

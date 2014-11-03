@@ -92,11 +92,11 @@ $event-height: 24px;
               color: #666666;
             }
 
-            .day-events .cal-event:hover {
+            .day-events .event:hover {
               background: #f0e6c2;
             }
 
-            .day-todos .cal-todo:hover {
+            .day-todos .todo:hover {
               background: #f0e6c2;
             }
           }
@@ -144,18 +144,22 @@ $event-height: 24px;
           }
 
           .day-todos {
-            display: none;
-            padding: 5px 0 10px 0;
-            margin: 5px 2px 0 4px;
-            border-top: 1px dotted #dddddd;
-
             .todo {
-              padding: 2px 0;
+              padding: 2px 2px 2px 4px;
               position: relative;
               cursor: pointer;
 
+              &:first-child {
+                border-top: 1px dotted #dddddd;
+                margin: 5px 0 0 0;
+              }
+
               .todo-wrapper {
-                line-height: 16px;
+                line-height: 17px;
+              }
+
+              .cb-done {
+                font-size: 12px;
               }
 
               .content {

@@ -74,10 +74,10 @@
 .simple-calendar .weeks .week .days .day.today .info {
   color: #666666;
 }
-.simple-calendar .weeks .week .days .day.today .day-events .cal-event:hover {
+.simple-calendar .weeks .week .days .day.today .day-events .event:hover {
   background: #f0e6c2;
 }
-.simple-calendar .weeks .week .days .day.today .day-todos .cal-todo:hover {
+.simple-calendar .weeks .week .days .day.today .day-todos .todo:hover {
   background: #f0e6c2;
 }
 .simple-calendar .weeks .week .days .day .event-spacers .event-spacer {
@@ -113,19 +113,20 @@
 .simple-calendar .weeks .week .days .day .day-events .event:hover {
   background: #f3f3f3;
 }
-.simple-calendar .weeks .week .days .day .day-todos {
-  display: none;
-  padding: 5px 0 10px 0;
-  margin: 5px 2px 0 4px;
-  border-top: 1px dotted #dddddd;
-}
 .simple-calendar .weeks .week .days .day .day-todos .todo {
-  padding: 2px 0;
+  padding: 2px 2px 2px 4px;
   position: relative;
   cursor: pointer;
 }
+.simple-calendar .weeks .week .days .day .day-todos .todo:first-child {
+  border-top: 1px dotted #dddddd;
+  margin: 5px 0 0 0;
+}
 .simple-calendar .weeks .week .days .day .day-todos .todo .todo-wrapper {
-  line-height: 16px;
+  line-height: 17px;
+}
+.simple-calendar .weeks .week .days .day .day-todos .todo .cb-done {
+  font-size: 12px;
 }
 .simple-calendar .weeks .week .days .day .day-todos .todo .content {
   font-size: 12px;

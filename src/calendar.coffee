@@ -6,7 +6,7 @@ class Calendar extends SimpleModule
     month: '' # required, moment obj or date string
     events: null
     todos: null
-    eventHeight: 24
+    eventHeight: 22
     eventKeys:
       id: 'id'
       start: 'start'
@@ -197,9 +197,13 @@ class Calendar extends SimpleModule
     eventsAcrossDay = []
     eventsInDay = []
     reorderList = []
+    results = []
 
     for event in events
       event = @_processEvent event
+
+      continue unless @dateInMonth(event.start) or @dateInMonth(event.end)
+
       if event.acrossDay
         eventsAcrossDay.push event
       else
@@ -211,9 +215,11 @@ class Calendar extends SimpleModule
       @events.inDay.sort (e1, e2) ->
         e1.start.diff e2.start
 
-      $event = @_renderEventInDay event for event in eventsInDay
-      $eventList = $event.parent()
-      reorderList.push $eventList[0] if $.inArray($eventList[0], reorderList) < 0
+      for event in eventsInDay
+        $event = @_renderEventInDay event
+        $eventList = $event.parent()
+        reorderList.push $eventList[0] if $.inArray($eventList[0], reorderList) < 0
+        results.push $event[0]
 
     # resort event list if neccesary
     for list in reorderList
@@ -231,7 +237,11 @@ class Calendar extends SimpleModule
         e1.start.diff e2.start
 
       @el.find( ".week .events" ).empty()
-      @_renderEventAcrossDay event for event in @events.acrossDay
+      for event in @events.acrossDay
+        $event = @_renderEventAcrossDay event
+        results.push $event[0]
+
+    $(results)
 
   clearEvents: ->
     @events.inDay.length = 0
@@ -378,6 +388,7 @@ class Calendar extends SimpleModule
 
     for todo in todos
       todo = @_processTodo todo
+      continue unless @dateInMonth(todo.due)
       @todos.push todo
       $todo = @_renderTodo todo
       $todoList = $todo.parent()
@@ -442,6 +453,10 @@ class Calendar extends SimpleModule
     @clearTodos()
     @weeksEl.empty()
     @_renderGrid()
+
+  dateInMonth: (date) ->
+    $day = @el.find(".day[data-date=#{date.format 'YYYY-MM-DD'}]")
+    $day.length > 0
 
   destroy: ->
     @clearEvents()

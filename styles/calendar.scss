@@ -1,5 +1,5 @@
 
-$event-height: 24px;
+$event-height: 22px;
 
 .simple-calendar {
   position: relative;
@@ -87,17 +87,18 @@ $event-height: 24px;
           }
 
           &.today {
-            background: #fdedb9;
+            background: #f9f9f9;
+
             .info {
               color: #666666;
             }
 
             .day-events .event:hover {
-              background: #f0e6c2;
+              background: #efefef;
             }
 
             .day-todos .todo:hover {
-              background: #f0e6c2;
+              background: #efefef;
             }
           }
 
@@ -109,8 +110,7 @@ $event-height: 24px;
           }
 
           .day-events {
-            display: none;
-            margin: 0 0 10px 0;
+            padding: 0 0 2px 0;
 
             .event {
               padding: 2px 0;
@@ -144,22 +144,30 @@ $event-height: 24px;
           }
 
           .day-todos {
+            padding: 0 0 10px 0;
+
             .todo {
               padding: 2px 2px 2px 4px;
+              margin: 0 0 2px 0;
               position: relative;
               cursor: pointer;
 
               &:first-child {
                 border-top: 1px dotted #dddddd;
-                margin: 5px 0 0 0;
+                padding-top: 4px;
               }
 
               .todo-wrapper {
-                line-height: 17px;
+                line-height: 14px;
+                position: relative;
+                padding: 0 0 0 16px;
               }
 
               .cb-done {
                 font-size: 12px;
+                position: absolute;
+                top: 2px;
+                left: 0;
               }
 
               .content {
@@ -197,15 +205,15 @@ $event-height: 24px;
           text-overflow: ellipsis;
 
           .event-wrapper {
-            height: $event-height - 4px;
-            margin: 0 3px;
+            height: $event-height - 2px;
+            margin: 0 2px;
             background: #aaaaaa;
 
             .content {
               color: #fff;
               font-size: 12px;
-              line-height: $event-height - 4px;
-              padding: 0 9px;
+              line-height: $event-height - 2px;
+              padding: 0 5px;
               margin: 0;
               overflow: hidden;
               white-space: nowrap;

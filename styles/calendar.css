@@ -69,24 +69,23 @@
   color: #bbbbbb;
 }
 .simple-calendar .weeks .week .days .day.today {
-  background: #fdedb9;
+  background: #f9f9f9;
 }
 .simple-calendar .weeks .week .days .day.today .info {
   color: #666666;
 }
 .simple-calendar .weeks .week .days .day.today .day-events .event:hover {
-  background: #f0e6c2;
+  background: #efefef;
 }
 .simple-calendar .weeks .week .days .day.today .day-todos .todo:hover {
-  background: #f0e6c2;
+  background: #efefef;
 }
 .simple-calendar .weeks .week .days .day .event-spacers .event-spacer {
-  height: 24px;
+  height: 22px;
   width: 100%;
 }
 .simple-calendar .weeks .week .days .day .day-events {
-  display: none;
-  margin: 0 0 10px 0;
+  padding: 0 0 2px 0;
 }
 .simple-calendar .weeks .week .days .day .day-events .event {
   padding: 2px 0;
@@ -113,20 +112,29 @@
 .simple-calendar .weeks .week .days .day .day-events .event:hover {
   background: #f3f3f3;
 }
+.simple-calendar .weeks .week .days .day .day-todos {
+  padding: 0 0 10px 0;
+}
 .simple-calendar .weeks .week .days .day .day-todos .todo {
   padding: 2px 2px 2px 4px;
+  margin: 0 0 2px 0;
   position: relative;
   cursor: pointer;
 }
 .simple-calendar .weeks .week .days .day .day-todos .todo:first-child {
   border-top: 1px dotted #dddddd;
-  margin: 5px 0 0 0;
+  padding-top: 4px;
 }
 .simple-calendar .weeks .week .days .day .day-todos .todo .todo-wrapper {
-  line-height: 17px;
+  line-height: 14px;
+  position: relative;
+  padding: 0 0 0 16px;
 }
 .simple-calendar .weeks .week .days .day .day-todos .todo .cb-done {
   font-size: 12px;
+  position: absolute;
+  top: 2px;
+  left: 0;
 }
 .simple-calendar .weeks .week .days .day .day-todos .todo .content {
   font-size: 12px;
@@ -156,14 +164,14 @@
 }
 .simple-calendar .weeks .week .events .event .event-wrapper {
   height: 20px;
-  margin: 0 3px;
+  margin: 0 2px;
   background: #aaaaaa;
 }
 .simple-calendar .weeks .week .events .event .event-wrapper .content {
   color: #fff;
   font-size: 12px;
   line-height: 20px;
-  padding: 0 9px;
+  padding: 0 5px;
   margin: 0;
   overflow: hidden;
   white-space: nowrap;

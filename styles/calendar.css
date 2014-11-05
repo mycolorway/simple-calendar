@@ -138,6 +138,7 @@
 }
 .simple-calendar .weeks .week .days .day .day-todos .todo .content {
   font-size: 12px;
+  word-wrap: break-word;
 }
 .simple-calendar .weeks .week .days .day .day-todos .todo.completed .content {
   text-decoration: line-through;

@@ -78,7 +78,8 @@ class Calendar extends SimpleModule
       @addTodo @opts.todos
 
   _render: ->
-    @el.addClass 'simple-calendar'
+    @el.empty()
+      .addClass 'simple-calendar'
       .data 'calendar', @
     $(@_tpl.layout).appendTo(@el)
     @titleEl = @el.find('.week-title')
@@ -136,6 +137,9 @@ class Calendar extends SimpleModule
     @el.on 'click.calendar', '.day', (e) =>
       @trigger 'dayclick', [$(e.currentTarget)]
 
+    @el.on 'mousedown.calendar', '.day', (e) ->
+      false
+
     @el.on 'click.calendar', '.event', (e) =>
       $event = $(e.currentTarget)
       event = $event.data 'event'
@@ -184,12 +188,14 @@ class Calendar extends SimpleModule
       id: originEvent[@opts.eventKeys.id]
       start: originEvent[@opts.eventKeys.start]
       end: originEvent[@opts.eventKeys.end]
-      content: originEvent[@opts.eventKeys.content]
+      content: originEvent[@opts.eventKeys.content] || ''
       origin: originEvent
 
     event.start = moment(event.start) unless moment.isMoment(event.start)
     event.end = moment(event.end) unless moment.isMoment(event.end)
-    event.acrossDay = event.end.diff(event.start, "d") > 0
+
+    if event.end.diff(event.start, "d") > 0 or @isAllDayEvent(event)
+      event.acrossDay = true
     event
 
   addEvent: (events) ->
@@ -234,8 +240,12 @@ class Calendar extends SimpleModule
     if eventsAcrossDay.length > 0
       $.merge @events.acrossDay, eventsAcrossDay
       @events.acrossDay.sort (e1, e2) ->
-        e1.start.diff e2.start
+        result = e1.start.diff(e2.start)
+        result = e1.end.diff(e2.end) if result == 0
+        result = e1.content.length - e2.content.length
+        result
 
+      @el.find( ".day .event-spacers" ).empty()
       @el.find( ".week .events" ).empty()
       for event in @events.acrossDay
         $event = @_renderEventAcrossDay event
@@ -457,6 +467,11 @@ class Calendar extends SimpleModule
   dateInMonth: (date) ->
     $day = @el.find(".day[data-date=#{date.format 'YYYY-MM-DD'}]")
     $day.length > 0
+
+  isAllDayEvent: (event) ->
+    dayStart = event.start.clone().startOf('day')
+    dayEnd = event.end.clone().endOf('day')
+    dayStart.isSame(event.start) and dayEnd.isSame(event.end, 'm')
 
   destroy: ->
     @clearEvents()

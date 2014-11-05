@@ -172,6 +172,7 @@ $event-height: 22px;
 
               .content {
                 font-size: 12px;
+                word-wrap: break-word;
               }
 
               &.completed .content {

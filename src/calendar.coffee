@@ -221,20 +221,21 @@ class Calendar extends SimpleModule
       @events.inDay.sort (e1, e2) ->
         e1.start.diff e2.start
 
-      for event in eventsInDay
+      @el.find( ".day .day-events" ).empty()
+      for event in @events.inDay
         $event = @_renderEventInDay event
         $eventList = $event.parent()
         reorderList.push $eventList[0] if $.inArray($eventList[0], reorderList) < 0
         results.push $event[0]
 
     # resort event list if neccesary
-    for list in reorderList
-      $events = $(list).children('.event')
-      $events.sort (el1, el2) ->
-        event1 = $(el1).data 'event'
-        event2 = $(el2).data 'event'
-        event1.start.diff event2.start
-      $events.detach().appendTo list
+    #for list in reorderList
+      #$events = $(list).children('.event')
+      #$events.sort (el1, el2) ->
+        #event1 = $(el1).data 'event'
+        #event2 = $(el2).data 'event'
+        #event1.start.diff event2.start
+      #$events.detach().appendTo list
 
     # render multi day events
     if eventsAcrossDay.length > 0
@@ -242,7 +243,7 @@ class Calendar extends SimpleModule
       @events.acrossDay.sort (e1, e2) ->
         result = e1.start.diff(e2.start)
         result = e1.end.diff(e2.end) if result == 0
-        result = e1.content.length - e2.content.length
+        result = e1.content.length - e2.content.length if result == 0
         result
 
       @el.find( ".day .event-spacers" ).empty()

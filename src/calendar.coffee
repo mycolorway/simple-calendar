@@ -4,6 +4,7 @@ class Calendar extends SimpleModule
   opts:
     el: null # required
     month: '' # required, moment obj or date string
+    timezone: null
     events: null
     todos: null
     eventHeight: 22
@@ -62,7 +63,7 @@ class Calendar extends SimpleModule
     @el = $(@opts.el)
     throw Error('simple calendar: el option is required') if @el.length < 1
 
-    @month = moment(@opts.month, 'YYYY-MM')
+    @month = @moment(@opts.month, 'YYYY-MM')
     throw Error('simple calendar: month option is required') unless @month.isValid()
 
     @_render()
@@ -98,7 +99,7 @@ class Calendar extends SimpleModule
     @_bind()
 
   _renderGrid: ->
-    today = moment().startOf('d')
+    today = @moment().startOf('d')
     weekStart = @month.clone().startOf('week')
     weekEnd = @month.clone().endOf('week')
 
@@ -173,6 +174,12 @@ class Calendar extends SimpleModule
       id = $event.data 'id'
       @el.find(".event[data-id=#{id}]").removeClass('hover')
 
+  moment: (args...) ->
+    if @opts.timezone
+      moment.tz args..., @opts.timezone
+    else
+      moment args...
+
   findEvent: (eventId) ->
     for e in $.merge([], @events.inDay, @events.acrossDay)
       if e.id == eventId
@@ -191,8 +198,8 @@ class Calendar extends SimpleModule
       content: originEvent[@opts.eventKeys.content] || ''
       origin: originEvent
 
-    event.start = moment(event.start) unless moment.isMoment(event.start)
-    event.end = moment(event.end) unless moment.isMoment(event.end)
+    event.start = @moment(event.start) unless moment.isMoment(event.start)
+    event.end = @moment(event.end) unless moment.isMoment(event.end)
 
     if event.end.diff(event.start, "d") > 0 or @isAllDayEvent(event)
       event.acrossDay = true
@@ -390,7 +397,7 @@ class Calendar extends SimpleModule
       content: originTodo[@opts.todoKeys.content]
       origin: originTodo
 
-    todo.due = moment(todo.due) unless moment.isMoment(todo.due)
+    todo.due = @moment(todo.due) unless moment.isMoment(todo.due)
     todo
 
   addTodo: (todos) ->
@@ -457,7 +464,7 @@ class Calendar extends SimpleModule
 
 
   setMonth: (month) ->
-    @month = moment(month, 'YYYY-MM')
+    @month = @moment(month, 'YYYY-MM')
     throw Error('simple calendar: month param should be YYYY-MM') unless @month.isValid()
 
     @clearEvents()

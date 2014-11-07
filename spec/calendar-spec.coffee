@@ -7,6 +7,7 @@ describe 'Simple Calendar', ->
     calendar = simple.calendar
       month: '2014-10'
       el: '#calendar'
+      timezone: 'Asia/Shanghai'
       events: [{
         id: 1,
         start: '2014-10-10T14:20:00',
@@ -123,7 +124,7 @@ describe 'Simple Calendar', ->
   it 'should rerender calendar grid and clear all events/todos after setting a new month', ->
     calendar.setMonth '2014-12'
 
-    expect(calendar.month.isSame(moment '2014-12', 'YYYY-MM')).toBe(true)
+    expect(calendar.month.isSame(moment.tz '2014-12', 'YYYY-MM', 'Asia/Shanghai')).toBe(true)
     expect(calendar.el.find('.day:first').data('date')).toBe('2014-12-01')
     expect(calendar.el.find('.day:last').data('date')).toBe('2015-01-04')
 

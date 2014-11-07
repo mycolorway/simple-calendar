@@ -32,8 +32,8 @@ module.exports = (grunt) ->
         globalAlias: 'calendar'
         deps:
           'default': ['$', 'SimpleModule', 'moment']
-          amd: ['jquery', 'simple-module', 'moment']
-          cjs: ['jquery', 'simple-module', 'moment']
+          amd: ['jquery', 'simple-module', 'moment-timezone']
+          cjs: ['jquery', 'simple-module', 'moment-timezone']
           global:
             items: ['jQuery', 'SimpleModule', 'moment']
             prefix: ''
@@ -63,6 +63,7 @@ module.exports = (grunt) ->
             'vendor/bower/jquery/dist/jquery.min.js'
             'vendor/bower/simple-module/lib/module.js'
             'vendor/bower/moment/moment.js'
+            'vendor/bower/moment-timezone/moment-timezone.js'
             'vendor/bower/moment/locale/zh-cn.js'
           ]
 

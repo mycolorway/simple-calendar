@@ -210,7 +210,6 @@ class Calendar extends SimpleModule
     eventsAcrossDay = []
     eventsInDay = []
     reorderList = []
-    results = []
 
     for event in events
       event = @_processEvent event
@@ -233,7 +232,6 @@ class Calendar extends SimpleModule
         $event = @_renderEventInDay event
         $eventList = $event.parent()
         reorderList.push $eventList[0] if $.inArray($eventList[0], reorderList) < 0
-        results.push $event[0]
 
     # resort event list if neccesary
     #for list in reorderList
@@ -257,9 +255,8 @@ class Calendar extends SimpleModule
       @el.find( ".week .events" ).empty()
       for event in @events.acrossDay
         $event = @_renderEventAcrossDay event
-        results.push $event[0]
 
-    $(results)
+    events
 
   clearEvents: ->
     @events.inDay.length = 0

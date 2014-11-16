@@ -181,7 +181,7 @@ class Calendar extends SimpleModule
       moment args...
 
   findEvent: (eventId) ->
-    for e in $.merge([], @events.inDay, @events.acrossDay)
+    for e in $.merge($.merge([], @events.inDay), @events.acrossDay)
       if e.id == eventId
         event = e
         break

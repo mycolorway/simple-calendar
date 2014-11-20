@@ -27,30 +27,29 @@ var calendar = simple.calendar({
   month: '2014-11',
   events: [...]
 });
-
 ```
 
 ### API 文档
 
 ####初始化选项
 
-__el__ selector/jquery object/dom element
+__el__    selector/jquery object/dom element
 
 初始化日历的容器元素，必选
 
-__month__ string: YYYY-MM
+__month__    string: YYYY-MM
 
 指定日历应该渲染哪个月的日历，必选
 
-__events__ array
+__events__    array
 
 被渲染的日历事件数据
 
-__todos__ array
+__todos__    array
 
 被渲染的日历任务数据
 
-__eventKeys__ object
+__eventKeys__    object
 
 日历事件的数据结构映射，默认值是：
 ```js
@@ -63,7 +62,7 @@ __eventKeys__ object
 ```
 组件会按照会按照这个key值映射重构传入的数据，原始数据会被保存在origin对象中。
 
-__todoKeys__ object
+__todoKeys__    object
 
 日历任务的数据结构映射，默认值是：
 ```js
@@ -76,7 +75,7 @@ __todoKeys__ object
 ```
 组件会按照会按照这个key值映射重构传入的数据，原始数据会被保存在origin对象中。
 
-__eventHeight__ number
+__eventHeight__    number
 
 日历渲染事件的高度，默认值是22，这个值需要跟CSS里的高度设置一致。
 

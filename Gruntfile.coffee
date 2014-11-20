@@ -49,7 +49,7 @@ module.exports = (grunt) ->
         files: ['src/**/*.coffee']
         tasks: ['coffee:src', 'umd']
       jasmine:
-        files: ['lib/**/*.js', 'specs/**/*.js']
+        files: ['lib/**/*.js', 'spec/**/*.js']
         tasks: 'jasmine:test:build'
 
     jasmine:

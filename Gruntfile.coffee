@@ -63,7 +63,7 @@ module.exports = (grunt) ->
             'vendor/bower/jquery/dist/jquery.min.js'
             'vendor/bower/simple-module/lib/module.js'
             'vendor/bower/moment/moment.js'
-            'vendor/bower/moment-timezone/moment-timezone.js'
+            'vendor/bower/moment-timezone/builds/moment-timezone-with-data.min.js'
             'vendor/bower/moment/locale/zh-cn.js'
           ]
 

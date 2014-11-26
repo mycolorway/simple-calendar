@@ -96,7 +96,8 @@ class Calendar extends SimpleModule
 
     @_renderGrid()
 
-    simple.dragdrop
+    SimpleDragdrop
+      el: @el
       draggable: '.event'
       droppable: '.day'
       helper: ($event) ->
@@ -116,8 +117,7 @@ class Calendar extends SimpleModule
         if event.acrossDay
           $events = $(".event[data-id='#{event.id}']:not(.drag-helper)")
           $events.hide()
-        false
-      el: @el
+        null
 
     @_bind()
 
@@ -237,7 +237,6 @@ class Calendar extends SimpleModule
       newDate = $target.data('date')
       differ = event.start.clone().startOf('day').diff(moment(newDate), 'd')
 
-      $('.day').removeClass 'dragover'
       if differ is 0
         return
       event.start.add(-differ, 'd')

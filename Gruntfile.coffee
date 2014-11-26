@@ -31,7 +31,7 @@ module.exports = (grunt) ->
         objectToExport: 'calendar'
         globalAlias: 'calendar'
         deps:
-          'default': ['$', 'SimpleModule', 'simpleDragdrop', 'moment']
+          'default': ['$', 'SimpleModule', 'SimpleDragdrop', 'moment']
           amd: ['jquery', 'simple-module', 'simple-dragdrop', 'moment-timezone']
           cjs: ['jquery', 'simple-module', 'simple-dragdrop', 'moment-timezone']
           global:

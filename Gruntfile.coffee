@@ -65,6 +65,7 @@ module.exports = (grunt) ->
             'vendor/bower/moment/moment.js'
             'vendor/bower/moment-timezone/builds/moment-timezone-with-data.min.js'
             'vendor/bower/moment/locale/zh-cn.js'
+            'vendor/bower/simple-dragdrop/lib/dragdrop.js'
           ]
 
   grunt.loadNpmTasks 'grunt-contrib-sass'

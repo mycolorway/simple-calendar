@@ -219,6 +219,9 @@ class Calendar extends SimpleModule
       event = $event.data 'event'
       return unless event
 
+      $('.days').css('cursor', 'move');
+      @trigger 'eventdragstart', event
+
     dragdrop.on 'dragend', (e, event) ->
       $event = $(event)
       event = $event.data 'event'
@@ -228,6 +231,7 @@ class Calendar extends SimpleModule
         $events = $(".event[data-id='#{event.id}']:not(.drag-helper)")
         $events.show()
       $('.day').removeClass 'dragover'
+      $('.days').css('cursor', 'default');
 
     dragdrop.on 'drop', (e, event, target) =>
       $event = $(event)
@@ -239,10 +243,12 @@ class Calendar extends SimpleModule
 
       if differ is 0
         return
+      $('.day').removeClass 'dragover'
+      $('.days').css('cursor', 'default');
       event.start.add(-differ, 'd')
       event.end.add(-differ, 'd')
       @replaceEvent(event)
-      @trigger 'eventdragend', [event]
+      @trigger 'eventdragend', event
 
 
   moment: (args...) ->

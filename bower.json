@@ -28,7 +28,7 @@
     "moment": "2.x",
     "moment-timezone": "0.x",
     "simple-module": "2.x",
-    "simple-dragdrop": "git@github.com:mycolorway/simple-dragdrop.git"
+    "simple-dragdrop": "1.x"
   }
 }
 

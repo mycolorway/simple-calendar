@@ -96,7 +96,7 @@ class Calendar extends SimpleModule
 
     @_renderGrid()
 
-    SimpleDragdrop
+    simple.dragdrop
       el: @el
       draggable: '.event'
       droppable: '.day'
@@ -165,12 +165,6 @@ class Calendar extends SimpleModule
     @el.on 'mousedown.calendar', '.day', (e) ->
       false
 
-    @el.on 'click.calendar', '.event', (e) =>
-      $event = $(e.currentTarget)
-      event = $event.data 'event'
-      @trigger 'eventclick', [event, $event]
-      false
-
     @el.on 'click.calendar', '.todo', (e) =>
       $todo = $(e.currentTarget)
       todo = $todo.data 'todo'
@@ -202,6 +196,13 @@ class Calendar extends SimpleModule
 
   _bindDrag: ->
     dragdrop = @el.data 'dragdrop'
+
+    dragdrop.on 'click', (e, target) =>
+      $event = $(target)
+      event = $event.data 'event'
+      @trigger 'eventclick', [event, $event]
+      false
+
     dragdrop.on 'dragenter', (e, event, target) ->
       $event = $(event)
       event = $event.data 'event'
@@ -214,7 +215,7 @@ class Calendar extends SimpleModule
       index =  $('.day').index($target)
       $('.day').slice(index, days + index + 1).addClass 'dragover'
 
-    dragdrop.on 'dragstart', (e, event) ->
+    dragdrop.on 'dragstart', (e, event) =>
       $event = $(event)
       event = $event.data 'event'
       return unless event

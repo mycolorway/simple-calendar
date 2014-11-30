@@ -246,7 +246,9 @@ class Calendar extends SimpleModule
     if eventsAcrossDay.length > 0
       $.merge @events.acrossDay, eventsAcrossDay
       @events.acrossDay.sort (e1, e2) ->
-        result = e1.start.diff(e2.start)
+        result = e1.start.diff(e2.start, 'd')
+        result = e2.end.diff(e1.start, 'd') - e1.end.diff(e2.start, 'd') if result == 0
+        result = e1.start.diff(e2.start) if result ==0
         result = e1.end.diff(e2.end) if result == 0
         result = e1.content.length - e2.content.length if result == 0
         result

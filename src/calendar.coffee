@@ -160,9 +160,16 @@ class Calendar extends SimpleModule
 
   _bind: ->
     @el.on 'click.calendar', '.day', (e) =>
+      return if $(e.currentTarget).is '.dragover'
       @trigger 'dayclick', [$(e.currentTarget)]
 
     @el.on 'mousedown.calendar', '.day', (e) ->
+      false
+
+    @el.on 'click.calendar', '.event', (e) =>
+      $event = $(e.currentTarget)
+      event = $event.data 'event'
+      @trigger 'eventclick', [event, $event]
       false
 
     @el.on 'click.calendar', '.todo', (e) =>
@@ -197,12 +204,6 @@ class Calendar extends SimpleModule
   _bindDrag: ->
     dragdrop = @el.data 'dragdrop'
 
-    dragdrop.on 'click', (e, target) =>
-      $event = $(target)
-      event = $event.data 'event'
-      @trigger 'eventclick', [event, $event]
-      false
-
     dragdrop.on 'dragenter', (e, event, target) ->
       $event = $(event)
       event = $event.data 'event'
@@ -220,6 +221,7 @@ class Calendar extends SimpleModule
       event = $event.data 'event'
       return unless event
 
+      $event.parents('.day').addClass('dragover')
       $('.days').css('cursor', 'move');
       @trigger 'eventdragstart', event
 
@@ -231,7 +233,9 @@ class Calendar extends SimpleModule
       if event.acrossDay
         $events = $(".event[data-id='#{event.id}']:not(.drag-helper)")
         $events.show()
-      $('.day').removeClass 'dragover'
+      setTimeout ->
+        $('.day').removeClass 'dragover'
+      , 0
       $('.days').css('cursor', 'default');
 
     dragdrop.on 'drop', (e, event, target) =>

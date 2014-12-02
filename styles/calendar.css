@@ -44,6 +44,7 @@
   height: 110px;
   border-right: 1px solid #dddddd;
   vertical-align: top;
+  padding: 0 0 20px 0;
 }
 .simple-calendar .weeks .week .days .day:last-of-type {
   border-right: none;

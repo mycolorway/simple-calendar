@@ -1,6 +1,8 @@
 Simple Calendar
 =============
 
+[![Build Status](https://circleci.com/gh/mycolorway/simple-calendar.png?circle-token=6b49dca8d1a55e24957a72be3dd2e2d3bfb7de73)](https://circleci.com/gh/mycolorway/simple-calendar)
+
 团队协作工具[Tower](http://tower.im)使用的日历组件，依赖：
 
 - JQuery 2.0+

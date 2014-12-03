@@ -177,9 +177,9 @@ class Calendar extends SimpleModule
       @el.find(".event[data-id=#{id}]").removeClass('hover')
 
   _initDrag: ->
-    return unless simple.dragdrop
+    return unless SimpleDragdrop
 
-    dragdrop = simple.dragdrop
+    dragdrop = SimpleDragdrop
       el: @el
       draggable: '.event'
       droppable: '.day'

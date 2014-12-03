@@ -1,4 +1,3 @@
-
 class Calendar extends SimpleModule
 
   opts:
@@ -97,6 +96,8 @@ class Calendar extends SimpleModule
 
     @_renderGrid()
     @_bind()
+    @_initDrag()
+
 
   _renderGrid: ->
     today = @moment().startOf('d')
@@ -136,6 +137,7 @@ class Calendar extends SimpleModule
 
   _bind: ->
     @el.on 'click.calendar', '.day', (e) =>
+      return if $(e.currentTarget).is '.dragover'
       @trigger 'dayclick', [$(e.currentTarget)]
 
     @el.on 'mousedown.calendar', '.day', (e) ->
@@ -173,6 +175,84 @@ class Calendar extends SimpleModule
       $event = $(e.currentTarget)
       id = $event.data 'id'
       @el.find(".event[data-id=#{id}]").removeClass('hover')
+
+  _initDrag: ->
+    return unless SimpleDragdrop
+
+    dragdrop = SimpleDragdrop
+      el: @el
+      draggable: '.event'
+      droppable: '.day'
+      helper: ($event) ->
+        $helper = $event.clone()
+        event = $event.data 'event'
+        days = event.end.clone().startOf('day').diff(event.start.clone().startOf('day'), 'd')
+        if days > 0
+          $helper.find('.content').text "(#{days + 1}天) #{event.content}"
+          $helper.data 'cursorPosition', 'center'
+        $helper.css
+          'width': 'auto'
+          'min-width': @el.find('.day').eq(0).width()
+        .addClass 'drag-helper'
+        return $helper
+      placeholder: ($event) ->
+        event = $event.data 'event'
+        if event.acrossDay
+          $events = $(".event[data-id='#{event.id}']:not(.drag-helper)")
+          $events.hide()
+        null
+
+    dragdrop.on 'dragenter', (e, event, target) ->
+      $event = $(event)
+      event = $event.data 'event'
+      return unless event
+
+      $target = $(target)
+      days = event.end.clone().startOf('day').diff(event.start.clone().startOf('day'), 'd')
+
+      $('.day').removeClass 'dragover'
+      index =  $('.day').index($target)
+      $('.day').slice(index, days + index + 1).addClass 'dragover'
+
+    dragdrop.on 'dragstart', (e, event) =>
+      $event = $(event)
+      event = $event.data 'event'
+      return unless event
+
+      $event.parents('.day').addClass('dragover')
+      $('.days').css('cursor', 'move');
+
+    dragdrop.on 'dragend', (e, event) ->
+      $event = $(event)
+      event = $event.data 'event'
+      return unless event
+
+      if event.acrossDay
+        $events = $(".event[data-id='#{event.id}']:not(.drag-helper)")
+        $events.show()
+      setTimeout ->
+        $('.day').removeClass 'dragover'
+      , 0
+      $('.days').css('cursor', 'default');
+
+    dragdrop.on 'drop', (e, event, target) =>
+      $event = $(event)
+      event = $event.data 'event'
+      return unless event
+
+      $target = $(target)
+      newDate = $target.data('date')
+      differ = event.start.clone().startOf('day').diff(moment(newDate), 'd')
+      return if differ is 0
+
+      $('.day').removeClass 'dragover'
+      $('.days').css('cursor', 'default');
+
+      event.start.add(-differ, 'd')
+      event.end.add(-differ, 'd')
+      @replaceEvent(event)
+      @trigger 'eventdrop', [event, differ]
+
 
   moment: (args...) ->
     if @opts.timezone

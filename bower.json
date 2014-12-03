@@ -27,7 +27,8 @@
     "jquery": "2.x",
     "moment": "2.x",
     "moment-timezone": "0.x",
-    "simple-module": "2.x"
+    "simple-module": "2.x",
+    "simple-dragdrop": "1.x"
   }
 }
 

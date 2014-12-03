@@ -31,11 +31,11 @@ module.exports = (grunt) ->
         objectToExport: 'calendar'
         globalAlias: 'calendar'
         deps:
-          'default': ['$', 'SimpleModule', 'moment']
-          amd: ['jquery', 'simple-module', 'moment-timezone']
-          cjs: ['jquery', 'simple-module', 'moment-timezone']
+          'default': ['$', 'SimpleModule', 'SimpleDragdrop', 'moment']
+          amd: ['jquery', 'simple-module', 'simple-dragdrop', 'moment-timezone']
+          cjs: ['jquery', 'simple-module', 'simple-dragdrop', 'moment-timezone']
           global:
-            items: ['jQuery', 'SimpleModule', 'moment']
+            items: ['jQuery', 'SimpleModule', 'simple.dragdrop','moment']
             prefix: ''
 
     watch:
@@ -65,6 +65,7 @@ module.exports = (grunt) ->
             'vendor/bower/moment/moment.js'
             'vendor/bower/moment-timezone/builds/moment-timezone-with-data.min.js'
             'vendor/bower/moment/locale/zh-cn.js'
+            'vendor/bower/simple-dragdrop/lib/dragdrop.js'
           ]
 
   grunt.loadNpmTasks 'grunt-contrib-sass'

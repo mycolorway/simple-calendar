@@ -46,6 +46,9 @@
   vertical-align: top;
   padding: 0 0 20px 0;
 }
+.simple-calendar .weeks .week .days .day.dragover {
+  background-color: #efefef;
+}
 .simple-calendar .weeks .week .days .day:last-of-type {
   border-right: none;
 }

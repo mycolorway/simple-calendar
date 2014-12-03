@@ -1,4 +1,4 @@
-
+@charset "utf-8";
 $event-height: 22px;
 
 .simple-calendar {
@@ -53,6 +53,10 @@ $event-height: 22px;
           border-right: 1px solid #dddddd;
           vertical-align: top;
           padding: 0 0 20px 0;
+
+          &.dragover {
+            background-color: #efefef;
+          }
 
           &:last-of-type {
             border-right: none;

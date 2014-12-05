@@ -198,11 +198,11 @@ class Calendar extends SimpleModule
       placeholder: ($event) ->
         event = $event.data 'event'
         if event.acrossDay
-          $events = $(".event[data-id='#{event.id}']:not(.drag-helper)")
+          $events = @el.find(".event[data-id='#{event.id}']:not(.drag-helper)")
           $events.hide()
         null
 
-    dragdrop.on 'dragenter', (e, event, target) ->
+    dragdrop.on 'dragenter', (e, event, target) =>
       $event = $(event)
       event = $event.data 'event'
       return unless event
@@ -210,9 +210,9 @@ class Calendar extends SimpleModule
       $target = $(target)
       days = event.end.clone().startOf('day').diff(event.start.clone().startOf('day'), 'd')
 
-      $('.day').removeClass 'dragover'
-      index =  $('.day').index($target)
-      $('.day').slice(index, days + index + 1).addClass 'dragover'
+      @el.find('.day').removeClass 'dragover'
+      index =  @el.find('.day').index($target)
+      @el.find('.day').slice(index, days + index + 1).addClass 'dragover'
 
     dragdrop.on 'dragstart', (e, event) =>
       $event = $(event)
@@ -220,20 +220,20 @@ class Calendar extends SimpleModule
       return unless event
 
       $event.parents('.day').addClass('dragover')
-      $('.days').css('cursor', 'move');
+      @el.find('.days').css('cursor', 'move');
 
-    dragdrop.on 'dragend', (e, event) ->
+    dragdrop.on 'dragend', (e, event) =>
       $event = $(event)
       event = $event.data 'event'
       return unless event
 
       if event.acrossDay
-        $events = $(".event[data-id='#{event.id}']:not(.drag-helper)")
+        $events = @el.find(".event[data-id='#{event.id}']:not(.drag-helper)")
         $events.show()
-      setTimeout ->
-        $('.day').removeClass 'dragover'
+      setTimeout =>
+        @el.find('.day').removeClass 'dragover'
       , 0
-      $('.days').css('cursor', 'default');
+      @el.find('.days').css('cursor', 'default');
 
     dragdrop.on 'drop', (e, event, target) =>
       $event = $(event)
@@ -245,8 +245,8 @@ class Calendar extends SimpleModule
       differ = event.start.clone().startOf('day').diff(moment(newDate), 'd')
       return if differ is 0
 
-      $('.day').removeClass 'dragover'
-      $('.days').css('cursor', 'default');
+      @el.find('.day').removeClass 'dragover'
+      @el.find('.days').css('cursor', 'default');
 
       event.start.add(-differ, 'd')
       event.end.add(-differ, 'd')

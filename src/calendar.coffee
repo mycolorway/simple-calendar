@@ -202,12 +202,13 @@ class Calendar extends SimpleModule
           $events.hide()
         null
 
-    dragdrop.on 'dragenter', (e, event, target) =>
-      $event = $(event)
+    dragdrop.on 'dragenter', (e, event) =>
+      $event = $(event.dragging)
+      $target = $(event.target)
+
       event = $event.data 'event'
       return unless event
 
-      $target = $(target)
       days = event.end.clone().startOf('day').diff(event.start.clone().startOf('day'), 'd')
 
       @el.find('.day').removeClass 'dragover'
@@ -215,7 +216,7 @@ class Calendar extends SimpleModule
       @el.find('.day').slice(index, days + index + 1).addClass 'dragover'
 
     dragdrop.on 'dragstart', (e, event) =>
-      $event = $(event)
+      $event = $(event.dragging)
       event = $event.data 'event'
       return unless event
 
@@ -223,7 +224,7 @@ class Calendar extends SimpleModule
       @el.find('.days').css('cursor', 'move');
 
     dragdrop.on 'dragend', (e, event) =>
-      $event = $(event)
+      $event = $(event.dragging)
       event = $event.data 'event'
       return unless event
 
@@ -235,12 +236,13 @@ class Calendar extends SimpleModule
       , 0
       @el.find('.days').css('cursor', 'default');
 
-    dragdrop.on 'drop', (e, event, target) =>
-      $event = $(event)
+    dragdrop.on 'drop', (e, event) =>
+      $event = $(event.dragging)
+      $target = $(event.target)
+
       event = $event.data 'event'
       return unless event
 
-      $target = $(target)
       newDate = $target.data('date')
       differ = event.start.clone().startOf('day').diff(moment(newDate), 'd')
       return if differ is 0

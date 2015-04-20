@@ -17,6 +17,7 @@ class Calendar extends SimpleModule
       due: 'due'
       completed: 'completed'
       content: 'content'
+    allowDrag: true
 
   _tpl:
     layout: '''
@@ -177,7 +178,7 @@ class Calendar extends SimpleModule
       @el.find(".event[data-id=#{id}]").removeClass('hover')
 
   _initDrag: ->
-    return unless SimpleDragdrop
+    return unless SimpleDragdrop and @opts.allowDrag
 
     dragdrop = SimpleDragdrop
       el: @el

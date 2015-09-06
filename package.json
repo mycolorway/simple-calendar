@@ -1,6 +1,7 @@
 {
   "name": "simple-calendar",
-  "version": "0.0.1",
+  "version": "1.0.0",
+  "main": "lib/calendar.js",
   "description": "A simple calendar component",
   "repository": {
     "type": "git",
@@ -22,6 +23,12 @@
     "grunt-contrib-sass": "0.x",
     "grunt-contrib-jasmine": "0.x",
     "grunt-umd": "2.x"
+  },
+  "dependencies": {
+    "jquery": "2.x",
+    "moment": "2.x",
+    "moment-timezone": "0.x",
+    "simple-module": "2.x",
+    "simple-dragdrop": "2.x"
   }
 }
-

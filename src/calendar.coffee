@@ -281,8 +281,8 @@ class Calendar extends SimpleModule
       content: originEvent[@opts.eventKeys.content] || ''
       origin: originEvent
 
-    event.start = @moment(event.start) unless moment.isMoment(event.start)
-    event.end = @moment(event.end) unless moment.isMoment(event.end)
+    event.start = @moment(event.start, 'YYYY-MM-DDTHH:mm:ssZ') unless moment.isMoment(event.start)
+    event.end = @moment(event.end, 'YYYY-MM-DDTHH:mm:ssZ') unless moment.isMoment(event.end)
 
     if event.end.diff(event.start, "d") > 0 or @isAllDayEvent(event)
       event.acrossDay = true
@@ -297,7 +297,7 @@ class Calendar extends SimpleModule
     for event in events
       event = @_processEvent event
 
-      continue unless @dateInMonth(event.start) or @dateInMonth(event.end)
+      continue unless @dateInMonth(event.start) or @dateInMonth(event.end) or @month.isBetween(event.start, event.end, 'month')
 
       if event.acrossDay
         eventsAcrossDay.push event

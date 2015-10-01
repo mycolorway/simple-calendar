@@ -297,7 +297,7 @@ class Calendar extends SimpleModule
     for event in events
       event = @_processEvent event
 
-      continue unless @dateInMonth(event.start) or @dateInMonth(event.end) or @month.isBetween(event.start, event.end, 'month')
+      continue unless @dateInMonth(event.start) or @dateInMonth(event.end) or (@month.isAfter(event.start, 'month') and @month.isBefore(event.end, 'month'))
 
       if event.acrossDay
         eventsAcrossDay.push event

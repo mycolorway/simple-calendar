@@ -284,7 +284,7 @@ class Calendar extends SimpleModule
     event.start = @moment(event.start) unless moment.isMoment(event.start)
     event.end = @moment(event.end) unless moment.isMoment(event.end)
 
-    if (event.end.date() - event.start.date() != 0) or @isAllDayEvent(event)
+    if (@_DiffDay(event.end, event.start) != 0) or @isAllDayEvent(event)
       event.acrossDay = true
 
     event
@@ -398,8 +398,17 @@ class Calendar extends SimpleModule
     @opts.onEventRender.call(@, event, $event) if $.isFunction(@opts.onEventRender)
     $event
 
+  _DiffDay: (end, start)->
+    dayCount = end.diff(start, 'days') >= 1
+    if dayCount >= 1
+      dayCount
+    else if end.date() - start.date() != 0
+      1
+    else 
+      0
+
   _renderEventAcrossDay: (event) ->
-    dayCount = event.end.date() - event.start.date()
+    dayCount = @_DiffDay(event.end, event.start)
     rows = {}
 
     # calculate event across week

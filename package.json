@@ -1,6 +1,6 @@
 {
   "name": "simple-calendar",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "main": "lib/calendar.js",
   "description": "A simple calendar component",
   "repository": {

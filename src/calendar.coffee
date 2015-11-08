@@ -399,7 +399,7 @@ class Calendar extends SimpleModule
     $event
 
   _DiffDay: (end, start)->
-    dayCount = end.diff(start, 'days') >= 1
+    dayCount = end.diff(start, 'days')
     if dayCount >= 1
       dayCount
     else if end.date() - start.date() != 0

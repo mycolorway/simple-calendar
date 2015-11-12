@@ -24,6 +24,16 @@
             start: '2014-10-10T14:20:00',
             end: '2014-10-10T16:20:00',
             content: 'event 3'
+          }, {
+            id: 5,
+            start: '2014-09-30T22:00:00',
+            end: '2014-10-04T08:20:00',
+            content: 'event 5'
+          }, {
+            id: 6,
+            start: '2014-10-10T22:00:00',
+            end: '2014-10-11T08:20:00',
+            content: 'event 6'
           }
         ],
         todos: [
@@ -54,6 +64,24 @@
       expect(calendar.el.find('.event:contains(event 1)').length).toBeGreaterThan(0);
       expect(calendar.el.find('.event:contains(event 2)').length).toBeGreaterThan(0);
       return expect(calendar.el.find('.event:contains(event 3)').length).toBeGreaterThan(0);
+    });
+    it('should render 5 day event', function() {
+      var $evt5, $start_day;
+      $evt5 = calendar.el.find('.event:contains(event 5)').first();
+      $start_day = calendar.el.find('.day[data-date=2014-09-30]').first();
+      expect($evt5.width()).toBeGreaterThan($start_day.width() * 4 - 4);
+      return expect($evt5.width()).toBeLessThan($start_day.width() * 5 + 5);
+    });
+    it('should render cross month event', function() {
+      var $evt5, $start_day;
+      $evt5 = calendar.el.find('.event:contains(event 5)').first();
+      $start_day = calendar.el.find('.day[data-date=2014-09-30]').first();
+      expect($evt5.offset().left).toBeGreaterThan($start_day.offset().left - 2);
+      expect($evt5.width()).toBeGreaterThan($start_day.width());
+      return expect($evt5.width()).toBeLessThan($start_day.width() * 5 + 5);
+    });
+    it('should render cross day event although less than 24 hours', function() {
+      return expect(calendar.el.find('.event:contains(event 6)').length).toBeGreaterThan(0);
     });
     it('should remove event from dom after removing it', function() {
       calendar.addEvent({

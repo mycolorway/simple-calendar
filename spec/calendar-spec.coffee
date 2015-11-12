@@ -9,30 +9,40 @@ describe 'Simple Calendar', ->
       el: '#calendar'
       timezone: 'Asia/Shanghai'
       events: [{
-        id: 1,
-        start: '2014-10-10T14:20:00',
-        end: '2014-10-13T14:20:00',
+        id: 1
+        start: '2014-10-10T14:20:00'
+        end: '2014-10-13T14:20:00'
         content: 'event 1'
       }, {
-        id: 2,
-        start: '2014-10-11T14:20:00',
-        end: '2014-10-12T14:20:00',
+        id: 2
+        start: '2014-10-11T14:20:00'
+        end: '2014-10-12T14:20:00'
         content: 'event 2'
       }, {
-        id: 3,
-        start: '2014-10-10T14:20:00',
-        end: '2014-10-10T16:20:00',
+        id: 3
+        start: '2014-10-10T14:20:00'
+        end: '2014-10-10T16:20:00'
         content: 'event 3'
+      }, {
+        id: 5
+        start: '2014-09-30T22:00:00'
+        end: '2014-10-04T08:20:00'
+        content: 'event 5'
+      }, {
+        id: 6
+        start: '2014-10-10T22:00:00'
+        end: '2014-10-11T08:20:00'
+        content: 'event 6'
       }]
       todos: [{
-        id: 1,
-        completed: false,
-        content: 'todo 1',
+        id: 1
+        completed: false
+        content: 'todo 1'
         due: '2014-10-28T14:20:00'
       }, {
-        id: 2,
-        completed: true,
-        content: 'todo 2',
+        id: 2
+        completed: true
+        content: 'todo 2'
         due: '2014-10-28T14:20:00'
       }]
 
@@ -52,6 +62,27 @@ describe 'Simple Calendar', ->
     expect(calendar.el.find('.event:contains(event 1)').length).toBeGreaterThan(0)
     expect(calendar.el.find('.event:contains(event 2)').length).toBeGreaterThan(0)
     expect(calendar.el.find('.event:contains(event 3)').length).toBeGreaterThan(0)
+
+  it 'should render 5 day event', ->
+    $evt5 = calendar.el.find('.event:contains(event 5)').first()
+    $start_day = calendar.el.find('.day[data-date=2014-09-30]').first()
+    # 因为render的时候会将不足1px的元素取近似值，所以在判断的时候允许近似值
+    # day_el_width * (n-1) - n < evt_el_width < day_el_width * n + 5
+    expect($evt5.width()).toBeGreaterThan($start_day.width() * 4 - 4)
+    expect($evt5.width()).toBeLessThan($start_day.width() * 5 + 5)
+
+
+  it 'should render cross month event', ->
+    $evt5 = calendar.el.find('.event:contains(event 5)').first()
+    $start_day = calendar.el.find('.day[data-date=2014-09-30]').first()
+    # 因为render的时候会将不足1px的元素取近似值，所以在判断的时候允许近似值
+    # day_el_width * (n-1) - n < evt_el_width < day_el_width * n + 5
+    expect($evt5.offset().left).toBeGreaterThan($start_day.offset().left - 2)
+    expect($evt5.width()).toBeGreaterThan($start_day.width())
+    expect($evt5.width()).toBeLessThan($start_day.width() * 5 + 5)
+
+  it 'should render cross day event although less than 24 hours', ->
+    expect(calendar.el.find('.event:contains(event 6)').length).toBeGreaterThan(0)
 
   it 'should remove event from dom after removing it', ->
     calendar.addEvent

@@ -66,20 +66,18 @@ describe 'Simple Calendar', ->
   it 'should render 5 day event', ->
     $evt5 = calendar.el.find('.event:contains(event 5)').first()
     $start_day = calendar.el.find('.day[data-date=2014-09-30]').first()
-    # 因为render的时候会将不足1px的元素取近似值，所以在判断的时候允许近似值
-    # day_el_width * (n-1) - n < evt_el_width < day_el_width * n + 5
-    expect($evt5.width()).toBeGreaterThan($start_day.width() * 4 - 4)
-    expect($evt5.width()).toBeLessThan($start_day.width() * 5 + 5)
+    # 因为render的时候会将不足1px的元素取近似值，所以在判断的时候只关心整数部分
+    expect($evt5.width() / $start_day.width()).toBeGreaterThan(4.1)
+    expect($evt5.width() / $start_day.width()).toBeLessThan(5.1)
 
 
   it 'should render cross month event', ->
     $evt5 = calendar.el.find('.event:contains(event 5)').first()
     $start_day = calendar.el.find('.day[data-date=2014-09-30]').first()
-    # 因为render的时候会将不足1px的元素取近似值，所以在判断的时候允许近似值
-    # day_el_width * (n-1) - n < evt_el_width < day_el_width * n + 5
+    # 因为render的时候会将不足1px的元素取近似值，所以在判断的时候只关心整数部分
     expect($evt5.offset().left).toBeGreaterThan($start_day.offset().left - 2)
     expect($evt5.width()).toBeGreaterThan($start_day.width())
-    expect($evt5.width()).toBeLessThan($start_day.width() * 5 + 5)
+    expect($evt5.width() / $start_day.width()).toBeLessThan(5.1)
 
   it 'should render cross day event although less than 24 hours', ->
     expect(calendar.el.find('.event:contains(event 6)').length).toBeGreaterThan(0)

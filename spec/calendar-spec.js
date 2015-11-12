@@ -69,8 +69,8 @@
       var $evt5, $start_day;
       $evt5 = calendar.el.find('.event:contains(event 5)').first();
       $start_day = calendar.el.find('.day[data-date=2014-09-30]').first();
-      expect($evt5.width()).toBeGreaterThan($start_day.width() * 4 - 4);
-      return expect($evt5.width()).toBeLessThan($start_day.width() * 5 + 5);
+      expect($evt5.width() / $start_day.width()).toBeGreaterThan(4.1);
+      return expect($evt5.width() / $start_day.width()).toBeLessThan(5.1);
     });
     it('should render cross month event', function() {
       var $evt5, $start_day;
@@ -78,7 +78,7 @@
       $start_day = calendar.el.find('.day[data-date=2014-09-30]').first();
       expect($evt5.offset().left).toBeGreaterThan($start_day.offset().left - 2);
       expect($evt5.width()).toBeGreaterThan($start_day.width());
-      return expect($evt5.width()).toBeLessThan($start_day.width() * 5 + 5);
+      return expect($evt5.width() / $start_day.width()).toBeLessThan(5.1);
     });
     it('should render cross day event although less than 24 hours', function() {
       return expect(calendar.el.find('.event:contains(event 6)').length).toBeGreaterThan(0);

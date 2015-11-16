@@ -399,13 +399,9 @@ class Calendar extends SimpleModule
     $event
 
   _DiffDay: (end, start)->
-    tmpDate = start.clone()
-    endDate = end.date()
-    if start.month() < end.month()
-      # 跨月时把上一月的日期加在endDate计算
-      for m in [start.month()..end.month() - 1]
-        endDate += tmpDate.month(m).endOf('month').date()
-    return endDate - start.date()
+    end_day = end.clone().endOf('day')
+    start_day = start.clone().endOf('day')
+    return end_day.diff(start_day, 'days')
 
   _renderEventAcrossDay: (event) ->
     dayCount = @_DiffDay(event.end, event.start)

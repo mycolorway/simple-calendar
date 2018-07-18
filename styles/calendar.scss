@@ -1,5 +1,4 @@
-@charset "utf-8";
-$event-height: 22px;
+$event-height: 24px;
 
 .simple-calendar {
   position: relative;
@@ -15,18 +14,13 @@ $event-height: 22px;
 
       .weekday {
         display: table-cell;
+        padding: 12px;
         width: 14.286%;
         height: 12px;
-        border-bottom: 2px solid #cccccc;
-        line-height: 12px;
+        line-height: 1;
         font-size: 12px;
-        padding: 0 0 5px 0;
-        color: #aaaaaa;
-        text-align: center;
-
-        &.weekend {
-          color: #b81818;
-        }
+        color: #777;
+        border-bottom: 2px solid #cccccc;
       }
     }
   }
@@ -36,7 +30,7 @@ $event-height: 22px;
       display: table;
       table-layout: fixed;
       width: 100%;
-      border-bottom: 1px solid #dddddd;
+      border-bottom: 1px solid #e3e3e3;
       position: relative;
 
       &:last-child {
@@ -50,7 +44,6 @@ $event-height: 22px;
           display: table-cell;
           width: 14.286%;
           height: 110px;
-          border-right: 1px solid #dddddd;
           vertical-align: top;
           padding: 0 0 20px 0;
 
@@ -63,47 +56,33 @@ $event-height: 22px;
           }
 
           .info {
-            height: 12px;
-            padding: 6px 8px;
-            font-size: 12px;
-            line-height: 12px;
-            color: #888888;
-            font-family: arial;
-
-            .num {
-              float: right;
-            }
-
-            .desc {
-              float: left;
-            }
+            height: 24px;
+            padding: 8px;
+            color: #000;
+            font: normal bold 24px/1 Calibri;
           }
 
           &.sun, &.sat {
             .info {
-              color: #c43515;
+              color: #DF3C2F;
             }
           }
 
           &.other-month {
             .info {
-              color: #bbbbbb;
+              color: #CCC;
             }
           }
 
           &.today {
-            background: #f9f9f9;
-
-            .info {
-              color: #666666;
-            }
+            background: rgba(#FFEC5E, 0.6);
 
             .day-events .event:hover {
-              background: #efefef;
+              background: #EFEFEF;
             }
 
             .day-todos .todo:hover {
-              background: #efefef;
+              background: #EFEFEF;
             }
           }
 
@@ -115,8 +94,6 @@ $event-height: 22px;
           }
 
           .day-events {
-            padding: 0 0 2px 0;
-
             .event {
               padding: 2px 0;
               position: relative;
@@ -124,18 +101,10 @@ $event-height: 22px;
 
               .content {
                 font-size: 12px;
-                line-height: 16px;
-                padding: 0 5px 0 12px;
+                line-height: 18px;
+                padding: 0 4px 0 6px;
                 margin: 0;
                 word-wrap: break-word;
-
-                &:before {
-                  content: "•";
-                  font-size: 12px;
-                  position: absolute;
-                  top: 3px;
-                  left: 5px;
-                }
               }
 
               &.loading .event-content {
@@ -157,22 +126,17 @@ $event-height: 22px;
               position: relative;
               cursor: pointer;
 
-              &:first-child {
-                border-top: 1px dotted #dddddd;
-                padding-top: 4px;
-              }
-
               .todo-wrapper {
-                line-height: 14px;
                 position: relative;
-                padding: 0 0 0 16px;
+                padding: 0 0 0 20px;
+                line-height: 14px;
               }
 
               .cb-done {
-                font-size: 12px;
                 position: absolute;
-                top: 2px;
+                top: 0;
                 left: 0;
+                font-size: 12px;
               }
 
               .content {
@@ -185,7 +149,7 @@ $event-height: 22px;
               }
 
               &:hover {
-                background: #f6f6f6;
+                background: #EFEFEF;
               }
 
               &.loading {
@@ -199,7 +163,7 @@ $event-height: 22px;
       .events {
         width: 100%;
         position: absolute;
-        top: 24px;
+        top: 40px;
         left: 0;
 
         .event {
@@ -214,13 +178,14 @@ $event-height: 22px;
             height: $event-height - 2px;
             margin: 0 2px;
             background: #aaaaaa;
+            border-radius: $event-height / 2;
 
             .content {
               color: #fff;
               font-size: 12px;
               line-height: $event-height - 2px;
-              padding: 0 5px;
               margin: 0;
+              padding: 0 4px;
               overflow: hidden;
               white-space: nowrap;
               text-overflow: ellipsis;

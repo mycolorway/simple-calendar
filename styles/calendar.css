@@ -1,4 +1,3 @@
-@charset "UTF-8";
 .simple-calendar {
   position: relative;
   background: #ffffff;
@@ -13,23 +12,19 @@
 }
 .simple-calendar .week-title .weekdays .weekday {
   display: table-cell;
+  padding: 12px;
   width: 14.286%;
   height: 12px;
-  border-bottom: 2px solid #cccccc;
-  line-height: 12px;
+  line-height: 1;
   font-size: 12px;
-  padding: 0 0 5px 0;
-  color: #aaaaaa;
-  text-align: center;
-}
-.simple-calendar .week-title .weekdays .weekday.weekend {
-  color: #b81818;
+  color: #777;
+  border-bottom: 2px solid #cccccc;
 }
 .simple-calendar .weeks .week {
   display: table;
   table-layout: fixed;
   width: 100%;
-  border-bottom: 1px solid #dddddd;
+  border-bottom: 1px solid #e3e3e3;
   position: relative;
 }
 .simple-calendar .weeks .week:last-child {
@@ -42,7 +37,6 @@
   display: table-cell;
   width: 14.286%;
   height: 110px;
-  border-right: 1px solid #dddddd;
   vertical-align: top;
   padding: 0 0 20px 0;
 }
@@ -53,43 +47,29 @@
   border-right: none;
 }
 .simple-calendar .weeks .week .days .day .info {
-  height: 12px;
-  padding: 6px 8px;
-  font-size: 12px;
-  line-height: 12px;
-  color: #888888;
-  font-family: arial;
-}
-.simple-calendar .weeks .week .days .day .info .num {
-  float: right;
-}
-.simple-calendar .weeks .week .days .day .info .desc {
-  float: left;
+  height: 24px;
+  padding: 8px;
+  color: #000;
+  font: normal bold 24px/1 Calibri;
 }
 .simple-calendar .weeks .week .days .day.sun .info, .simple-calendar .weeks .week .days .day.sat .info {
-  color: #c43515;
+  color: #DF3C2F;
 }
 .simple-calendar .weeks .week .days .day.other-month .info {
-  color: #bbbbbb;
+  color: #CCC;
 }
 .simple-calendar .weeks .week .days .day.today {
-  background: #f9f9f9;
-}
-.simple-calendar .weeks .week .days .day.today .info {
-  color: #666666;
+  background: rgba(255, 236, 94, 0.6);
 }
 .simple-calendar .weeks .week .days .day.today .day-events .event:hover {
-  background: #efefef;
+  background: #EFEFEF;
 }
 .simple-calendar .weeks .week .days .day.today .day-todos .todo:hover {
-  background: #efefef;
+  background: #EFEFEF;
 }
 .simple-calendar .weeks .week .days .day .event-spacers .event-spacer {
-  height: 22px;
+  height: 24px;
   width: 100%;
-}
-.simple-calendar .weeks .week .days .day .day-events {
-  padding: 0 0 2px 0;
 }
 .simple-calendar .weeks .week .days .day .day-events .event {
   padding: 2px 0;
@@ -98,17 +78,10 @@
 }
 .simple-calendar .weeks .week .days .day .day-events .event .content {
   font-size: 12px;
-  line-height: 16px;
-  padding: 0 5px 0 12px;
+  line-height: 18px;
+  padding: 0 4px 0 6px;
   margin: 0;
   word-wrap: break-word;
-}
-.simple-calendar .weeks .week .days .day .day-events .event .content:before {
-  content: "•";
-  font-size: 12px;
-  position: absolute;
-  top: 3px;
-  left: 5px;
 }
 .simple-calendar .weeks .week .days .day .day-events .event.loading .event-content {
   opacity: 0.6;
@@ -125,20 +98,16 @@
   position: relative;
   cursor: pointer;
 }
-.simple-calendar .weeks .week .days .day .day-todos .todo:first-child {
-  border-top: 1px dotted #dddddd;
-  padding-top: 4px;
-}
 .simple-calendar .weeks .week .days .day .day-todos .todo .todo-wrapper {
-  line-height: 14px;
   position: relative;
-  padding: 0 0 0 16px;
+  padding: 0 0 0 20px;
+  line-height: 14px;
 }
 .simple-calendar .weeks .week .days .day .day-todos .todo .cb-done {
-  font-size: 12px;
   position: absolute;
-  top: 2px;
+  top: 0;
   left: 0;
+  font-size: 12px;
 }
 .simple-calendar .weeks .week .days .day .day-todos .todo .content {
   font-size: 12px;
@@ -148,7 +117,7 @@
   text-decoration: line-through;
 }
 .simple-calendar .weeks .week .days .day .day-todos .todo:hover {
-  background: #f6f6f6;
+  background: #EFEFEF;
 }
 .simple-calendar .weeks .week .days .day .day-todos .todo.loading {
   opacity: 0.6;
@@ -156,7 +125,7 @@
 .simple-calendar .weeks .week .events {
   width: 100%;
   position: absolute;
-  top: 24px;
+  top: 40px;
   left: 0;
 }
 .simple-calendar .weeks .week .events .event {
@@ -168,16 +137,17 @@
   text-overflow: ellipsis;
 }
 .simple-calendar .weeks .week .events .event .event-wrapper {
-  height: 20px;
+  height: 22px;
   margin: 0 2px;
   background: #aaaaaa;
+  border-radius: 12px;
 }
 .simple-calendar .weeks .week .events .event .event-wrapper .content {
   color: #fff;
   font-size: 12px;
-  line-height: 20px;
-  padding: 0 5px;
+  line-height: 22px;
   margin: 0;
+  padding: 0 4px;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;

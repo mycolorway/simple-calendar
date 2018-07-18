@@ -6,7 +6,7 @@ class Calendar extends SimpleModule
     timezone: null
     events: null
     todos: null
-    eventHeight: 22
+    eventHeight: 24
     eventKeys:
       id: 'id'
       start: 'start'
@@ -35,7 +35,6 @@ class Calendar extends SimpleModule
     day: '''
       <div class="day">
         <div class="info">
-          <span class="desc"></span>
           <span class="num"></span>
         </div>
         <div class="event-spacers"></div>
@@ -67,7 +66,7 @@ class Calendar extends SimpleModule
     throw Error('simple calendar: month option is required') unless @month.isValid()
 
     @_render()
-    @events = 
+    @events =
       inDay: []
       acrossDay: []
     @todos = []
@@ -119,8 +118,6 @@ class Calendar extends SimpleModule
 
         if date.isSame today
           $day.addClass('today')
-            .find('.desc')
-            .text(@_t 'today')
 
         if date.isoWeekday() == 6
           $day.addClass 'sat'

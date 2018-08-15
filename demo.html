@@ -25,39 +25,39 @@
 
 $(function() {
     var calendar = simple.calendar({
-        month: '2018-07',
+        month: '2018-08',
         el: '#calendar',
         events: [{
           id: 1,
-          start: '2018-07-10T14:20:00',
-          end: '2018-07-13T14:20:00',
+          start: '2018-08-10T14:20:00',
+          end: '2018-08-13T14:20:00',
           content: 'event 1'
         }, {
           id: 2,
-          start: '2018-07-11T14:20:00',
-          end: '2018-07-12T14:20:00',
+          start: '2018-08-11T14:20:00',
+          end: '2018-08-12T14:20:00',
           content: 'event 2'
         }, {
           id: 3,
-          start: '2018-07-10T14:20:00',
-          end: '2018-07-10T16:20:00',
+          start: '2018-08-10T14:20:00',
+          end: '2018-08-10T16:20:00',
           content: 'event 3'
         }, {
           id: 4,
-          start: '2018-07-10T15:20:00',
-          end: '2018-07-10T17:20:00',
+          start: '2018-08-10T15:20:00',
+          end: '2018-08-10T17:20:00',
           content: 'event 4'
         }],
         todos: [{
           id: 1,
           completed: false,
           content: 'todo 1',
-          due: '2018-07-28T14:20:00'
+          due: '2018-08-28T14:20:00'
         }, {
           id: 2,
           completed: true,
           content: 'todo 2',
-          due: '2018-07-28T14:20:00'
+          due: '2018-08-28T14:20:00'
         }],
         onEventRender: function(event, $event) {
             var $content = $event.find('.content');

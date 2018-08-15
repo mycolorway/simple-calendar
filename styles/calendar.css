@@ -48,18 +48,18 @@
 }
 .simple-calendar .weeks .week .days .day .info {
   height: 24px;
-  padding: 8px;
+  padding: 12px 8px;
   color: #000;
   font: normal bold 24px/1 Calibri;
 }
 .simple-calendar .weeks .week .days .day.sun .info, .simple-calendar .weeks .week .days .day.sat .info {
-  color: #DF3C2F;
+  color: #ffa02b;
 }
 .simple-calendar .weeks .week .days .day.other-month .info {
   color: #CCC;
 }
 .simple-calendar .weeks .week .days .day.today {
-  background: rgba(255, 236, 94, 0.6);
+  background: #f6f6f6;
 }
 .simple-calendar .weeks .week .days .day.today .day-events .event:hover {
   background: #EFEFEF;
@@ -87,7 +87,7 @@
   opacity: 0.6;
 }
 .simple-calendar .weeks .week .days .day .day-events .event:hover {
-  background: #f3f3f3;
+  background: #f6f6f6;
 }
 .simple-calendar .weeks .week .days .day .day-todos {
   padding: 0 0 10px 0;
@@ -100,18 +100,20 @@
 }
 .simple-calendar .weeks .week .days .day .day-todos .todo .todo-wrapper {
   position: relative;
-  padding: 0 0 0 20px;
-  line-height: 14px;
+  padding: 0 0 0 18px;
+  line-height: 16px;
 }
 .simple-calendar .weeks .week .days .day .day-todos .todo .cb-done {
   position: absolute;
-  top: 0;
-  left: 0;
+  top: 2px;
+  left: 2px;
+  margin: 0;
   font-size: 12px;
 }
 .simple-calendar .weeks .week .days .day .day-todos .todo .content {
   font-size: 12px;
   word-wrap: break-word;
+  vertical-align: top;
 }
 .simple-calendar .weeks .week .days .day .day-todos .todo.completed .content {
   text-decoration: line-through;
@@ -125,7 +127,7 @@
 .simple-calendar .weeks .week .events {
   width: 100%;
   position: absolute;
-  top: 40px;
+  top: 48px;
   left: 0;
 }
 .simple-calendar .weeks .week .events .event {
@@ -139,7 +141,7 @@
 .simple-calendar .weeks .week .events .event .event-wrapper {
   height: 22px;
   margin: 0 2px;
-  background: #aaaaaa;
+  background-color: #cccccc;
   border-radius: 12px;
 }
 .simple-calendar .weeks .week .events .event .event-wrapper .content {

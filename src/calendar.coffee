@@ -416,19 +416,22 @@ class Calendar extends SimpleModule
       rows[week].push $day
 
     # calculate event position
-    slot = 0
-    loop
-      occupied = false
+    slot = {}
+    for week, days of rows
+      slot[week] = 0
 
-      for week, days of rows
+      loop
+        occupied = false
         for $day in days
           $spacers = $day.find '.event-spacer'
-          if $spacers.length > slot and $spacers.eq(slot).is("[data-id]")
+          if $spacers.length > slot[week] and $spacers.eq(slot[week]).is("[data-id]")
             occupied = true
             break
-        break if occupied
-      break unless occupied
-      slot += 1
+
+        if occupied
+          slot[week] += 1
+        else
+          break
 
     events = []
     for week, days of rows
@@ -437,7 +440,7 @@ class Calendar extends SimpleModule
       $event = $(@_tpl.event).attr "data-id", event.id
       .css
         width: days.length / 7 * 100 + '%'
-        top: @opts.eventHeight * slot
+        top: @opts.eventHeight * slot[week]
         left: $week.find('.day').index(days[0]) / 7 * 100 + '%'
       .data 'event', event
 
@@ -450,12 +453,10 @@ class Calendar extends SimpleModule
         $spacerList = $day.find '.event-spacers'
         $spacers = $spacerList.find '.event-spacer'
 
-        if slot < $spacers.length
-          $spacers.eq(slot).attr("data-id", event.id)
-        else
-          for i in [0..slot - $spacers.length]
-            $spacer = $('<div class="event-spacer"></div>').appendTo($spacerList)
-            $spacer.attr("data-id", event.id)
+        unless slot[week] < $spacers.length
+          for i in [0..slot[week] - $spacers.length]
+            $('<div class="event-spacer"></div>').appendTo($spacerList)
+        $spacerList.find('.event-spacer').eq(slot[week]).attr("data-id", event.id)
 
     @trigger 'eventrender', [event, $(events)]
     @opts.onEventRender.call(@, event, $(events)) if $.isFunction(@opts.onEventRender)

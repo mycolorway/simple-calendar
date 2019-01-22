@@ -1,6 +1,6 @@
 {
   "name": "simple-calendar",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "main": "lib/calendar.js",
   "description": "A simple calendar component",
   "repository": {
@@ -25,9 +25,9 @@
     "grunt-umd": "2.x"
   },
   "peerDependencies": {
-    "jquery": "^3.3.1",
+    "jquery": "3.x",
     "moment": "2.x",
-    "moment-timezone": "0.2.x",
+    "moment-timezone": "0.x",
     "simple-dragdrop": "2.x",
     "simple-module": "2.x"
   }

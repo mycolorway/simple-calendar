@@ -14,7 +14,8 @@ class Calendar extends SimpleModule
       content: 'content'
     todoKeys:
       id: 'id'
-      due: 'due'
+      start: 'start'
+      end: 'end'
       completed: 'completed'
       content: 'content'
     allowDrag: true
@@ -53,7 +54,7 @@ class Calendar extends SimpleModule
       <div class="todo">
         <div class="todo-wrapper">
           <input type="checkbox" class="cb-done" />
-          <span class="content"></span>
+          <p class="content"></p>
         </div>
       </div>
     '''
@@ -69,7 +70,9 @@ class Calendar extends SimpleModule
     @events =
       inDay: []
       acrossDay: []
-    @todos = []
+    @todos =
+      inDay: []
+      acrossDay: []
 
     if @opts.events
       @addEvent @opts.events
@@ -314,15 +317,6 @@ class Calendar extends SimpleModule
         $eventList = $event.parent()
         reorderList.push $eventList[0] if $.inArray($eventList[0], reorderList) < 0
 
-    # resort event list if neccesary
-    #for list in reorderList
-      #$events = $(list).children('.event')
-      #$events.sort (el1, el2) ->
-        #event1 = $(el1).data 'event'
-        #event2 = $(el2).data 'event'
-        #event1.start.diff event2.start
-      #$events.detach().appendTo list
-
     # render multi day events
     if eventsAcrossDay.length > 0
       $.merge @events.acrossDay, eventsAcrossDay
@@ -334,19 +328,17 @@ class Calendar extends SimpleModule
         result = e1.content.length - e2.content.length if result == 0
         result
 
-      @el.find( ".day .event-spacers" ).empty()
-      @el.find( ".week .events" ).empty()
+      @el.find('.event-spacers').empty()
+      @el.find('.events').empty()
       for event in @events.acrossDay
-        $event = @_renderEventAcrossDay event
-
-    events
+        $event = @_renderAcrossDay event
 
   clearEvents: ->
     @events.inDay.length = 0
     @events.acrossDay.length = 0
-    @el.find( ".day .event-spacers" ).empty()
-    @el.find( ".day .day-events" ).empty()
-    @el.find( ".week .events" ).empty()
+    @el.find('.event-spacers').empty()
+    @el.find('.events').empty()
+    @el.find('.day-events').empty()
 
   removeEvent: (event) ->
     if typeof event == 'object'
@@ -359,9 +351,9 @@ class Calendar extends SimpleModule
 
     if event.acrossDay
       @events.acrossDay.splice $.inArray(event, @events.acrossDay), 1
-      @el.find( ".day .event-spacers" ).empty()
-      @el.find( ".week .events" ).empty()
-      @_renderEventAcrossDay e for e in @events.acrossDay
+      @el.find('.event-spacers').empty()
+      @el.find('.events').empty()
+      @_renderAcrossDay e for e in @events.acrossDay
     else
       @events.inDay.splice $.inArray(event, @events.inDay), 1
       @el.find(".event[data-id=#{event.id}]").remove()
@@ -373,9 +365,9 @@ class Calendar extends SimpleModule
     $.extend event, newEvent
 
     if event.acrossDay
-      @el.find( ".day .event-spacers" ).empty()
-      @el.find( ".week .events" ).empty()
-      @_renderEventAcrossDay e for e in @events.acrossDay
+      @el.find('.event-spacers').empty()
+      @el.find('.events').empty()
+      @_renderAcrossDay e for e in @events.acrossDay
     else
       @_renderEventInDay event
 
@@ -400,7 +392,7 @@ class Calendar extends SimpleModule
     start_day = start.clone().endOf('day')
     return end_day.diff(start_day, 'days')
 
-  _renderEventAcrossDay: (event) ->
+  _renderAcrossDay: (event, type = 'event') ->
     dayCount = @_DiffDay(event.end, event.start)
     rows = {}
 
@@ -437,12 +429,12 @@ class Calendar extends SimpleModule
     for week, days of rows
       $week = @el.find ".week[data-week=#{week}]"
 
-      $event = $(@_tpl.event).attr "data-id", event.id
-      .css
+      $event = if type is 'todo' then $(@_tpl.todo) else $(@_tpl.event)
+      $event.attr("data-id", event.id).css
         width: days.length / 7 * 100 + '%'
         top: @opts.eventHeight * slot[week]
         left: $week.find('.day').index(days[0]) / 7 * 100 + '%'
-      .data 'event', event
+      .data type, event
 
       $event.find('.content').text event.content
       $event.appendTo $week.find('.events')
@@ -462,8 +454,6 @@ class Calendar extends SimpleModule
     @opts.onEventRender.call(@, event, $(events)) if $.isFunction(@opts.onEventRender)
     $(events)
 
-
-
   findTodo: (todoId) ->
     for t in @todos
       if t.id == todoId
@@ -477,37 +467,59 @@ class Calendar extends SimpleModule
 
     todo =
       id: originTodo[@opts.todoKeys.id]
-      due: originTodo[@opts.todoKeys.due]
+      start: originTodo[@opts.todoKeys.start]
+      end: originTodo[@opts.todoKeys.end]
       completed: originTodo[@opts.todoKeys.completed]
       content: originTodo[@opts.todoKeys.content]
       origin: originTodo
 
-    todo.due = @moment(todo.due) unless moment.isMoment(todo.due)
+    todo.start = @moment(todo.start) if todo.start and !moment.isMoment(todo.start)
+    todo.end = @moment(todo.end) unless moment.isMoment(todo.end)
+    todo.acrossDay = true if todo.start and (@_DiffDay(todo.end, todo.start) != 0)
+
     todo
 
   addTodo: (todos) ->
     todos = [todos] unless $.isArray todos
+    todosAcrossDay = []
+    todosInDay = []
     reorderList = []
 
     for todo in todos
       todo = @_processTodo todo
-      continue unless @dateInMonth(todo.due)
-      @todos.push todo
-      $todo = @_renderTodo todo
-      $todoList = $todo.parent()
-      reorderList.push $todoList[0] if $.inArray($todoList[0], reorderList) < 0
+      continue unless @dateInMonth(todo.end)
 
-    @todos.sort (t1, t2) ->
-      t1.due.diff t2.due
+      if todo.acrossDay
+        todosAcrossDay.push todo
+      else
+        todosInDay.push todo
 
-    # resort todo list if neccesary
-    for list in reorderList
-      $todos = $(list).children('.todo')
-      $todo.sort (el1, el2) ->
-        todo1 = $(el1).data 'todo'
-        todo2 = $(el2).data 'todo'
-        todo1.due.diff todo2.due
-      $todos.detach().appendTo list
+    # render one day todos
+    if todosInDay.length > 0
+      $.merge @todos.inDay, todosInDay
+      @todos.inDay.sort (t1, t2) ->
+        t1.end.diff t2.end
+
+      @el.find(".day .day-todos").empty()
+      for todo in @todos.inDay
+        $todo = @_renderTodoInDay todo
+        $todoList = $todo.parent()
+        reorderList.push $todoList[0] if $.inArray($todoList[0], reorderList) < 0
+
+    # render multi day events
+    if todosAcrossDay.length > 0
+      $.merge @todos.acrossDay, todosAcrossDay
+      @todos.acrossDay.sort (e1, e2) ->
+        result = e1.start.diff(e2.start, 'd')
+        result = e2.end.diff(e1.start, 'd') - e1.end.diff(e2.start, 'd') if result == 0
+        result = e1.start.diff(e2.start) if result ==0
+        result = e1.end.diff(e2.end) if result == 0
+        result = e1.content.length - e2.content.length if result == 0
+        result
+
+      @el.find('.events .todo').remove()
+      for todo in @todos.acrossDay
+        $todo = @_renderAcrossDay todo, 'todo'
 
   removeTodo: (todo) ->
     if typeof todo == 'object'
@@ -524,14 +536,15 @@ class Calendar extends SimpleModule
     newTodo = @_processTodo newTodo
     return unless todo = @findTodo newTodo.id
     $.extend todo, newTodo
-    @_renderTodo todo
+    @_renderTodoInDay todo
 
   clearTodos: ->
-    @todos.length = 0
-    @el.find( ".day .day-todos" ).empty()
+    @todos.inDay.length = 0
+    @todos.acrossDay.length = 0
+    @el.find('.todo').remove()
 
-  _renderTodo: (todo)->
-    $todoList = @el.find(".day[data-date=#{todo.due.format('YYYY-MM-DD')}] .day-todos")
+  _renderTodoInDay: (todo) ->
+    $todoList = @el.find(".day[data-date=#{todo.end.format('YYYY-MM-DD')}] .day-todos")
     $todo = @el.find(".todo[data-id=#{todo.id}]").remove()
 
     unless $todo.length > 0
@@ -546,7 +559,6 @@ class Calendar extends SimpleModule
     @trigger 'todorender', [todo, $todo]
     @opts.onTodoRender.call(@, todo, $todo) if $.isFunction(@opts.onTodoRender)
     $todo
-
 
   setMonth: (month) ->
     @month = @moment(month, 'YYYY-MM')

@@ -6,7 +6,7 @@ class Calendar extends SimpleModule
     timezone: null
     events: null
     todos: null
-    eventHeight: 24
+    eventHeight: 28
     eventKeys:
       id: 'id'
       start: 'start'

@@ -69,11 +69,11 @@
 }
 .simple-calendar .weeks .week .days .day .event-spacer,
 .simple-calendar .weeks .week .days .day .todo-spacer {
-  height: 24px;
+  height: 28px;
   width: 100%;
 }
 .simple-calendar .weeks .week .days .day .day-events .event {
-  padding: 2px 0;
+  padding: 3px 0;
   position: relative;
   cursor: pointer;
 }
@@ -94,7 +94,7 @@
   padding: 0 0 10px 0;
 }
 .simple-calendar .weeks .week .days .day .day-todos .todo {
-  padding: 2px 2px 2px 4px;
+  padding: 3px 2px 3px 4px;
   margin: 0 0 2px 0;
   position: relative;
   cursor: pointer;
@@ -141,17 +141,17 @@
   text-overflow: ellipsis;
 }
 .simple-calendar .weeks .week .events .event .event-wrapper {
-  height: 22px;
+  height: 24px;
   margin: 0 2px;
   background-color: #cccccc;
-  border-radius: 12px;
+  border-radius: 14px;
 }
 .simple-calendar .weeks .week .events .event .content {
   color: #fff;
   font-size: 12px;
-  line-height: 22px;
+  line-height: 24px;
   margin: 0;
-  padding: 0 4px;
+  padding: 0 8px;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -176,16 +176,16 @@
   text-overflow: ellipsis;
 }
 .simple-calendar .weeks .week .events .todo .todo-wrapper {
-  height: 22px;
+  height: 24px;
   margin: 0 2px;
   padding-left: 20px;
   background-color: #cccccc;
-  border-radius: 12px;
+  border-radius: 2px;
 }
 .simple-calendar .weeks .week .events .todo .content {
   color: #fff;
   font-size: 12px;
-  line-height: 22px;
+  line-height: 24px;
   margin: 0;
   padding: 0 4px;
   overflow: hidden;

@@ -487,7 +487,7 @@ class Calendar extends SimpleModule
 
     for todo in todos
       todo = @_processTodo todo
-      continue unless @dateInMonth(todo.end)
+      continue unless @dateInMonth(todo.start) or @dateInMonth(todo.end) or (@month.isAfter(todo.start, 'month') and @month.isBefore(todo.end, 'month'))
 
       if todo.acrossDay
         todosAcrossDay.push todo

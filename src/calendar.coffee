@@ -429,7 +429,12 @@ class Calendar extends SimpleModule
     for week, days of rows
       $week = @el.find ".week[data-week=#{week}]"
 
-      $event = if type is 'todo' then $(@_tpl.todo) else $(@_tpl.event)
+      if type is 'todo'
+        $event = $(@_tpl.todo)
+        $event.toggleClass 'completed', event.completed
+      else 
+        $event = $(@_tpl.event)
+
       $event.attr("data-id", event.id).css
         width: days.length / 7 * 100 + '%'
         top: @opts.eventHeight * slot[week]

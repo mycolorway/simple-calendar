@@ -37,6 +37,7 @@ class Calendar extends SimpleModule
       <div class="day">
         <div class="info">
           <span class="num"></span>
+          <span class="add-todos"></span>
         </div>
         <div class="event-spacers"></div>
         <div class="day-events"></div>
@@ -140,6 +141,11 @@ class Calendar extends SimpleModule
     @el.on 'click.calendar', '.day', (e) =>
       return if $(e.currentTarget).is '.dragover'
       @trigger 'dayclick', [$(e.currentTarget)]
+
+    @el.on 'click.calendar', '.add-todos', (e) =>
+      $day = $(e.currentTarget).closest('.day')
+      return if $day.is '.dragover'
+      @trigger 'addtodosclick', [$day]
 
     @el.on 'mousedown.calendar', '.day', (e) ->
       false

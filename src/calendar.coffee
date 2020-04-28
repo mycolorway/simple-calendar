@@ -142,6 +142,10 @@ class Calendar extends SimpleModule
       return if $(e.currentTarget).is '.dragover'
       @trigger 'dayclick', [$(e.currentTarget)]
 
+    @el.on 'dblclick.calendar', '.day', (e) =>
+      return if $(e.currentTarget).is '.dragover'
+      @trigger 'daydblclick', [$(e.currentTarget)]
+
     @el.on 'click.calendar', '.add-todos', (e) =>
       $day = $(e.currentTarget).closest('.day')
       return if $day.is '.dragover'

@@ -585,6 +585,10 @@ class Calendar extends SimpleModule
     unless $todo.length > 0
       $todo = $(@_tpl.todo).attr "data-id", todo.id
 
+    $todo.css
+      width: 'auto'
+      top: 'auto'
+      left: 'auto'
     $todo.data 'todo', todo
       .toggleClass 'completed', todo.completed
     $todo.find('.content').text todo.content

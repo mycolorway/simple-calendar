@@ -187,6 +187,12 @@ class Calendar extends SimpleModule
       id = $event.data 'id'
       @el.find(".event[data-id=#{id}]").removeClass('hover')
 
+    @el.on 'mouseenter.calendar', '.todo', (e) =>
+      @trigger 'todomouseenter', [$(e.currentTarget)]
+    
+    @el.on 'mouseleave.calendar', '.todo', (e) =>
+      @trigger 'todomouseleave'
+
   _initDrag: ->
     return unless simple.dragdrop and @opts.allowDrag
 
@@ -470,10 +476,11 @@ class Calendar extends SimpleModule
     $(events)
 
   findTodo: (todoId) ->
-    for t in @todos
-      if t.id == todoId
-        todo = t
-        break
+    for key, arr of @todos
+      for t in arr
+        if t.id == todoId
+          todo = t
+          break
     todo
 
   _processTodo: (originTodo) ->
@@ -547,14 +554,23 @@ class Calendar extends SimpleModule
       todoId = todo
 
     return unless todo = @findTodo todoId
-    @todos.splice $.inArray(todo, @todos), 1
+
+    for key, arr of @todos
+      for t, index in arr
+        if t.id == todoId
+          arr.splice index, 1
+          break
     @el.find(".todo[data-id=#{todo.id}]").remove()
 
   replaceTodo: (newTodo) ->
     newTodo = @_processTodo newTodo
     return unless todo = @findTodo newTodo.id
     $.extend todo, newTodo
-    @_renderTodoInDay todo
+    if todo.acrossDay
+      @el.find(".todo[data-id=#{todo.id}]").remove()
+      @_renderAcrossDay todo
+    else
+      @_renderTodoInDay todo
 
   clearTodos: ->
     @todos.inDay.length = 0

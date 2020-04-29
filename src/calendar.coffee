@@ -580,15 +580,10 @@ class Calendar extends SimpleModule
 
   _renderTodoInDay: (todo) ->
     $todoList = @el.find(".day[data-date=#{todo.end.format('YYYY-MM-DD')}] .day-todos")
-    $todo = @el.find(".todo[data-id=#{todo.id}]").remove()
+    @el.find(".todo[data-id=#{todo.id}]").remove()
 
-    unless $todo.length > 0
-      $todo = $(@_tpl.todo).attr "data-id", todo.id
+    $todo = $(@_tpl.todo).attr "data-id", todo.id
 
-    $todo.css
-      width: 'auto'
-      top: 'auto'
-      left: 'auto'
     $todo.data 'todo', todo
       .toggleClass 'completed', todo.completed
     $todo.find('.content').text todo.content

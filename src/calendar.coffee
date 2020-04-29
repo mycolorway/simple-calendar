@@ -565,6 +565,7 @@ class Calendar extends SimpleModule
   replaceTodo: (newTodo) ->
     newTodo = @_processTodo newTodo
     return unless todo = @findTodo newTodo.id
+    newTodo.acrossDay = !!newTodo.acrossDay
     $.extend todo, newTodo
     if todo.acrossDay
       @el.find(".todo[data-id=#{todo.id}]").remove()

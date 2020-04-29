@@ -568,7 +568,7 @@ class Calendar extends SimpleModule
     $.extend todo, newTodo
     if todo.acrossDay
       @el.find(".todo[data-id=#{todo.id}]").remove()
-      @_renderAcrossDay todo
+      @_renderAcrossDay todo, 'todo'
     else
       @_renderTodoInDay todo
 

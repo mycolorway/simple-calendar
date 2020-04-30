@@ -188,10 +188,14 @@ class Calendar extends SimpleModule
       @el.find(".event[data-id=#{id}]").removeClass('hover')
 
     @el.on 'mouseenter.calendar', '.todo', (e) =>
-      @trigger 'todomouseenter', [$(e.currentTarget)]
+      $todo = $(e.currentTarget)
+      todo = $todo.data 'todo'
+      @trigger 'todomouseenter', [todo, $todo]
     
     @el.on 'mouseleave.calendar', '.todo', (e) =>
-      @trigger 'todomouseleave'
+      $todo = $(e.currentTarget)
+      todo = $todo.data 'todo'
+      @trigger 'todomouseleave', [todo, $todo]
 
   _initDrag: ->
     return unless simple.dragdrop and @opts.allowDrag

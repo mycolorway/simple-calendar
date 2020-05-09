@@ -514,7 +514,7 @@ class Calendar extends SimpleModule
       origin: originTodo
 
     todo.start = @moment(todo.start) if todo.start and !moment.isMoment(todo.start)
-    todo.end = @moment(todo.end) unless moment.isMoment(todo.end)
+    todo.end = @moment(todo.end) if todo.end and !moment.isMoment(todo.end)
     todo.acrossDay = true if todo.start and (@_DiffDay(todo.end, todo.start) != 0)
 
     todo
@@ -583,8 +583,8 @@ class Calendar extends SimpleModule
   replaceTodo: (newTodo) ->
     newTodo = @_processTodo newTodo
     return unless todo = @findTodo newTodo.id
-    newTodo.acrossDay = !!newTodo.acrossDay
     $.extend todo, newTodo
+    todo.acrossDay = if todo.start and (@_DiffDay(todo.end, todo.start) != 0) then true else false
     if todo.acrossDay
       @el.find(".todo[data-id=#{todo.id}]").remove()
       @_renderAcrossDay todo, 'todo'

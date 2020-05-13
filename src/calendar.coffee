@@ -466,6 +466,7 @@ class Calendar extends SimpleModule
       if type is 'todo'
         $event = $(@_tpl.todo)
         $event.toggleClass 'completed', event.completed
+        $event.find('.cb-done').prop('checked', event.completed)
       else 
         $event = $(@_tpl.event)
 

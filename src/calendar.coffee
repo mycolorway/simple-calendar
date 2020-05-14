@@ -586,8 +586,8 @@ class Calendar extends SimpleModule
     return unless todo = @findTodo newTodo.id
     $.extend todo, newTodo
     todo.acrossDay = if todo.start and (@_DiffDay(todo.end, todo.start) != 0) then true else false
+    @el.find(".event-spacer[data-id=#{todo.id}]").remove()
     if todo.acrossDay
-      @el.find(".event-spacer[data-id=#{todo.id}]").remove()
       @el.find(".todo[data-id=#{todo.id}]").remove()
       @_renderAcrossDay todo, 'todo'
     else

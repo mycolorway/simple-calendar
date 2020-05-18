@@ -18,7 +18,7 @@ class Calendar extends SimpleModule
       end: 'end'
       completed: 'completed'
       content: 'content'
-    allowDrag: true
+    allowDrag: 'event' # 可取值：all(日程，任务均可拖拽)， disable(不能拖拽)， event(仅日程可拖拽) 
 
   _tpl:
     layout: '''
@@ -37,6 +37,7 @@ class Calendar extends SimpleModule
       <div class="day">
         <div class="info">
           <span class="num"></span>
+          <span class="add-todos"></span>
         </div>
         <div class="event-spacers"></div>
         <div class="day-events"></div>
@@ -141,6 +142,15 @@ class Calendar extends SimpleModule
       return if $(e.currentTarget).is '.dragover'
       @trigger 'dayclick', [$(e.currentTarget)]
 
+    @el.on 'dblclick.calendar', '.day', (e) =>
+      return if $(e.currentTarget).is '.dragover'
+      @trigger 'daydblclick', [$(e.currentTarget)]
+
+    @el.on 'click.calendar', '.add-todos', (e) =>
+      $day = $(e.currentTarget).closest('.day')
+      return if $day.is '.dragover'
+      @trigger 'addtodosclick', [$day]
+
     @el.on 'mousedown.calendar', '.day', (e) ->
       false
 
@@ -177,16 +187,31 @@ class Calendar extends SimpleModule
       id = $event.data 'id'
       @el.find(".event[data-id=#{id}]").removeClass('hover')
 
-  _initDrag: ->
-    return unless simple.dragdrop and @opts.allowDrag
+    @el.on 'mouseenter.calendar', '.todo', (e) =>
+      $todo = $(e.currentTarget)
+      todo = $todo.data 'todo'
+      @trigger 'todomouseenter', [todo, $todo]
+    
+    @el.on 'mouseleave.calendar', '.todo', (e) =>
+      $todo = $(e.currentTarget)
+      todo = $todo.data 'todo'
+      @trigger 'todomouseleave', [todo, $todo]
 
+  _initDrag: ->
+    return unless simple.dragdrop and @opts.allowDrag != 'disable'
+
+    if @opts.allowDrag is 'all'
+      draggable = '.event, .todo:not(.completed)'
+    else
+      draggable = '.event'
     dragdrop = simple.dragdrop
       el: @el
-      draggable: '.event'
+      draggable: draggable
       droppable: '.day'
       helper: ($event) ->
         $helper = $event.clone()
-        event = $event.data 'event'
+        event = $event.data('event') or $event.data 'todo'
+        event.start = event.end.clone() unless event.start
         days = event.end.clone().startOf('day').diff(event.start.clone().startOf('day'), 'd')
         if days > 0
           $helper.find('.content').text "(#{days + 1}天) #{event.content}"
@@ -197,9 +222,10 @@ class Calendar extends SimpleModule
         .addClass 'drag-helper'
         return $helper
       placeholder: ($event) ->
-        event = $event.data 'event'
+        event = $event.data('event') or $event.data 'todo'
         if event.acrossDay
           $events = @el.find(".event[data-id='#{event.id}']:not(.drag-helper)")
+          $events = @el.find(".todo[data-id='#{event.id}']:not(.drag-helper)") if $event.data 'todo'
           $events.hide()
         null
 
@@ -207,7 +233,7 @@ class Calendar extends SimpleModule
       $event = $(event.dragging)
       $target = $(event.target)
 
-      event = $event.data 'event'
+      event = $event.data('event') or $event.data 'todo'
       return unless event
 
       days = event.end.clone().startOf('day').diff(event.start.clone().startOf('day'), 'd')
@@ -218,7 +244,7 @@ class Calendar extends SimpleModule
 
     dragdrop.on 'dragstart', (e, event) =>
       $event = $(event.dragging)
-      event = $event.data 'event'
+      event = $event.data('event') or $event.data 'todo'
       return unless event
 
       $event.parents('.day').addClass('dragover')
@@ -226,11 +252,12 @@ class Calendar extends SimpleModule
 
     dragdrop.on 'dragend', (e, event) =>
       $event = $(event.dragging)
-      event = $event.data 'event'
+      event = $event.data('event') or $event.data 'todo'
       return unless event
 
       if event.acrossDay
         $events = @el.find(".event[data-id='#{event.id}']:not(.drag-helper)")
+        $events = @el.find(".todo[data-id='#{event.id}']:not(.drag-helper)") if $event.data 'todo'
         $events.show()
       setTimeout =>
         @el.find('.day').removeClass 'dragover'
@@ -241,7 +268,7 @@ class Calendar extends SimpleModule
       $event = $(event.dragging)
       $target = $(event.target)
 
-      event = $event.data 'event'
+      event = $event.data('event') or $event.data 'todo'
       return unless event
 
       newDate = $target.data('date')
@@ -253,8 +280,15 @@ class Calendar extends SimpleModule
 
       event.start.add(-differ, 'd')
       event.end.add(-differ, 'd')
-      @replaceEvent(event)
-      @trigger 'eventdrop', [event, differ]
+      if $event.data('event')
+        @replaceEvent(event)
+        @trigger 'eventdrop', [event, differ]
+      else 
+        @replaceTodo(event)
+        @trigger 'tododrop', [event, differ]
+
+      
+      
 
 
   moment: (args...) ->
@@ -366,7 +400,7 @@ class Calendar extends SimpleModule
 
     if event.acrossDay
       @el.find('.event-spacers').empty()
-      @el.find('.events').empty()
+      @el.find(".event[data-id=#{newEvent.id}]").remove()
       @_renderAcrossDay e for e in @events.acrossDay
     else
       @_renderEventInDay event
@@ -429,7 +463,13 @@ class Calendar extends SimpleModule
     for week, days of rows
       $week = @el.find ".week[data-week=#{week}]"
 
-      $event = if type is 'todo' then $(@_tpl.todo) else $(@_tpl.event)
+      if type is 'todo'
+        $event = $(@_tpl.todo)
+        $event.toggleClass 'completed', event.completed
+        $event.find('.cb-done').prop('checked', event.completed)
+      else 
+        $event = $(@_tpl.event)
+
       $event.attr("data-id", event.id).css
         width: days.length / 7 * 100 + '%'
         top: @opts.eventHeight * slot[week]
@@ -455,10 +495,11 @@ class Calendar extends SimpleModule
     $(events)
 
   findTodo: (todoId) ->
-    for t in @todos
-      if t.id == todoId
-        todo = t
-        break
+    for key, arr of @todos
+      for t in arr
+        if t.id == todoId
+          todo = t
+          break
     todo
 
   _processTodo: (originTodo) ->
@@ -474,7 +515,7 @@ class Calendar extends SimpleModule
       origin: originTodo
 
     todo.start = @moment(todo.start) if todo.start and !moment.isMoment(todo.start)
-    todo.end = @moment(todo.end) unless moment.isMoment(todo.end)
+    todo.end = @moment(todo.end) if todo.end and !moment.isMoment(todo.end)
     todo.acrossDay = true if todo.start and (@_DiffDay(todo.end, todo.start) != 0)
 
     todo
@@ -532,14 +573,25 @@ class Calendar extends SimpleModule
       todoId = todo
 
     return unless todo = @findTodo todoId
-    @todos.splice $.inArray(todo, @todos), 1
+
+    for key, arr of @todos
+      for t, index in arr
+        if t.id == todoId
+          arr.splice index, 1
+          break
     @el.find(".todo[data-id=#{todo.id}]").remove()
 
   replaceTodo: (newTodo) ->
     newTodo = @_processTodo newTodo
     return unless todo = @findTodo newTodo.id
     $.extend todo, newTodo
-    @_renderTodoInDay todo
+    todo.acrossDay = if todo.start and (@_DiffDay(todo.end, todo.start) != 0) then true else false
+    @el.find(".event-spacer[data-id=#{todo.id}]").remove()
+    if todo.acrossDay
+      @el.find(".todo[data-id=#{todo.id}]").remove()
+      @_renderAcrossDay todo, 'todo'
+    else
+      @_renderTodoInDay todo
 
   clearTodos: ->
     @todos.inDay.length = 0
@@ -548,10 +600,9 @@ class Calendar extends SimpleModule
 
   _renderTodoInDay: (todo) ->
     $todoList = @el.find(".day[data-date=#{todo.end.format('YYYY-MM-DD')}] .day-todos")
-    $todo = @el.find(".todo[data-id=#{todo.id}]").remove()
+    @el.find(".todo[data-id=#{todo.id}]").remove()
 
-    unless $todo.length > 0
-      $todo = $(@_tpl.todo).attr "data-id", todo.id
+    $todo = $(@_tpl.todo).attr "data-id", todo.id
 
     $todo.data 'todo', todo
       .toggleClass 'completed', todo.completed

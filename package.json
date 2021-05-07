@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/mycolorway/simple-calendar",
   "devDependencies": {
-    "grunt": "0.x",
+    "grunt": "1.x",
     "grunt-contrib-watch": "0.x",
     "grunt-contrib-coffee": "0.x",
     "grunt-contrib-sass": "0.x",

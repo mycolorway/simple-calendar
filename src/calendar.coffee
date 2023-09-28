@@ -335,8 +335,8 @@ class Calendar extends SimpleModule
     items.sort (item1, item2) =>
       result = @_differentInCalendarDays(item1.start,item2.start)
       result = @_differentInCalendarDays(item2.end, item1.start) - @_differentInCalendarDays(item1.end, item2.start) if result == 0
-      result = item1.start.diff(item2.start) if result ==0
       result = item1.end.diff(item2.end) if result == 0
+      result = item1.start.diff(item2.start) if result ==0
       result = item1.content.length - item2.content.length if result == 0
       result
 

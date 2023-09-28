@@ -18,7 +18,8 @@ class Calendar extends SimpleModule
       end: 'end'
       completed: 'completed'
       content: 'content'
-    allowDrag: 'event' # 可取值：all(日程，任务均可拖拽)， disable(不能拖拽)， event(仅日程可拖拽) 
+    allowDrag: 'event' # 可取值：all(日程，任务均可拖拽)， disable(不能拖拽)， event(仅日程可拖拽)
+    draggable: null,
 
   _tpl:
     layout: '''
@@ -200,7 +201,9 @@ class Calendar extends SimpleModule
   _initDrag: ->
     return unless simple.dragdrop and @opts.allowDrag != 'disable'
 
-    if @opts.allowDrag is 'all'
+    if @opts.draggable
+      draggable = @opts.draggable
+    else if @opts.allowDrag is 'all'
       draggable = '.event, .todo:not(.completed)'
     else
       draggable = '.event'
@@ -323,6 +326,23 @@ class Calendar extends SimpleModule
 
     event
 
+  _differentInCalendarDays: (time1, time2) ->
+    time1.startOf('day')
+    time2.startOf('day')
+
+    time1.diff(time2, 'days')
+
+  _sortItems: (items) ->
+    items.sort (item1, item2) ->
+      result = _differentInCalendarDays(item1.start, item2.start)
+      result = _differentInCalendarDays(item2.end, item1.start) - _differentInCalendarDays(item1.end, item2.start) if result == 0
+      result = e1.start.diff(e2.start) if result ==0
+      result = e1.end.diff(e2.end) if result == 0
+      result = e1.content.length - e2.content.length if result == 0
+      result
+
+    items
+
   addEvent: (events) ->
     events = [events] unless $.isArray(events)
     eventsAcrossDay = []
@@ -342,8 +362,7 @@ class Calendar extends SimpleModule
     # render one day events
     if eventsInDay.length > 0
       $.merge @events.inDay, eventsInDay
-      @events.inDay.sort (e1, e2) ->
-        e1.start.diff e2.start
+      @events.inDay = _sortItems(@events.inDay)
 
       @el.find( ".day .day-events" ).empty()
       for event in @events.inDay
@@ -354,14 +373,7 @@ class Calendar extends SimpleModule
     # render multi day events
     if eventsAcrossDay.length > 0
       $.merge @events.acrossDay, eventsAcrossDay
-      @events.acrossDay.sort (e1, e2) ->
-        result = e1.start.diff(e2.start, 'd')
-        result = e2.end.diff(e1.start, 'd') - e1.end.diff(e2.start, 'd') if result == 0
-        result = e1.start.diff(e2.start) if result ==0
-        result = e1.end.diff(e2.end) if result == 0
-        result = e1.content.length - e2.content.length if result == 0
-        result
-
+      @events.acrossDay = _sortItems(@events.acrossDay)
       @el.find('.event-spacers').empty()
       @el.find('.events').empty()
       for event in @events.acrossDay
@@ -541,8 +553,7 @@ class Calendar extends SimpleModule
     # render one day todos
     if todosInDay.length > 0
       $.merge @todos.inDay, todosInDay
-      @todos.inDay.sort (t1, t2) ->
-        t1.end.diff t2.end
+      @todos.inDay = _sortItems(@todos.inDay)
 
       @el.find(".day .day-todos").empty()
       for todo in @todos.inDay
@@ -553,13 +564,7 @@ class Calendar extends SimpleModule
     # render multi day events
     if todosAcrossDay.length > 0
       $.merge @todos.acrossDay, todosAcrossDay
-      @todos.acrossDay.sort (e1, e2) ->
-        result = e1.start.diff(e2.start, 'd')
-        result = e2.end.diff(e1.start, 'd') - e1.end.diff(e2.start, 'd') if result == 0
-        result = e1.start.diff(e2.start) if result ==0
-        result = e1.end.diff(e2.end) if result == 0
-        result = e1.content.length - e2.content.length if result == 0
-        result
+      @todos.acrossDay = _sortItems(@todos.acrossDay)
 
       @el.find('.events .todo').remove()
       for todo in @todos.acrossDay

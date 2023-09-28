@@ -327,18 +327,17 @@ class Calendar extends SimpleModule
     event
 
   _differentInCalendarDays: (time1, time2) ->
-    time1.startOf('day')
-    time2.startOf('day')
-
-    time1.diff(time2, 'days')
+    time1Start = time1.clone().startOf('day')
+    time2Start = time2.clone().startOf('day')
+    time1Start.diff(time2Start, 'days')
 
   _sortItems: (items) ->
-    items.sort (item1, item2) ->
-      result = _differentInCalendarDays(item1.start, item2.start)
-      result = _differentInCalendarDays(item2.end, item1.start) - _differentInCalendarDays(item1.end, item2.start) if result == 0
-      result = e1.start.diff(e2.start) if result ==0
-      result = e1.end.diff(e2.end) if result == 0
-      result = e1.content.length - e2.content.length if result == 0
+    items.sort (item1, item2) =>
+      result = @_differentInCalendarDays(item1.start,item2.start)
+      result = @_differentInCalendarDays(item2.end, item1.start) - @_differentInCalendarDays(item1.end, item2.start) if result == 0
+      result = item1.start.diff(item2.start) if result ==0
+      result = item1.end.diff(item2.end) if result == 0
+      result = item1.content.length - item2.content.length if result == 0
       result
 
     items
@@ -362,7 +361,7 @@ class Calendar extends SimpleModule
     # render one day events
     if eventsInDay.length > 0
       $.merge @events.inDay, eventsInDay
-      @events.inDay = _sortItems(@events.inDay)
+      @events.inDay = @_sortItems(@events.inDay)
 
       @el.find( ".day .day-events" ).empty()
       for event in @events.inDay
@@ -373,7 +372,7 @@ class Calendar extends SimpleModule
     # render multi day events
     if eventsAcrossDay.length > 0
       $.merge @events.acrossDay, eventsAcrossDay
-      @events.acrossDay = _sortItems(@events.acrossDay)
+      @events.acrossDay = @_sortItems(@events.acrossDay)
       @el.find('.event-spacers').empty()
       @el.find('.events').empty()
       for event in @events.acrossDay
@@ -553,7 +552,7 @@ class Calendar extends SimpleModule
     # render one day todos
     if todosInDay.length > 0
       $.merge @todos.inDay, todosInDay
-      @todos.inDay = _sortItems(@todos.inDay)
+      @todos.inDay = @_sortItems(@todos.inDay)
 
       @el.find(".day .day-todos").empty()
       for todo in @todos.inDay
@@ -564,7 +563,7 @@ class Calendar extends SimpleModule
     # render multi day events
     if todosAcrossDay.length > 0
       $.merge @todos.acrossDay, todosAcrossDay
-      @todos.acrossDay = _sortItems(@todos.acrossDay)
+      @todos.acrossDay = @_sortItems(@todos.acrossDay)
 
       @el.find('.events .todo').remove()
       for todo in @todos.acrossDay

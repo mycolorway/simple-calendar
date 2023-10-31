@@ -192,7 +192,7 @@ class Calendar extends SimpleModule
       $todo = $(e.currentTarget)
       todo = $todo.data 'todo'
       @trigger 'todomouseenter', [todo, $todo]
-    
+
     @el.on 'mouseleave.calendar', '.todo', (e) =>
       $todo = $(e.currentTarget)
       todo = $todo.data 'todo'
@@ -286,12 +286,12 @@ class Calendar extends SimpleModule
       if $event.data('event')
         @replaceEvent(event)
         @trigger 'eventdrop', [event, differ]
-      else 
+      else
         @replaceTodo(event)
         @trigger 'tododrop', [event, differ]
 
-      
-      
+
+
 
 
   moment: (args...) ->
@@ -320,9 +320,7 @@ class Calendar extends SimpleModule
 
     event.start = @moment(event.start) unless moment.isMoment(event.start)
     event.end = @moment(event.end) unless moment.isMoment(event.end)
-
-    if (@_DiffDay(event.end, event.start) != 0) or @isAllDayEvent(event)
-      event.acrossDay = true
+    event.acrossDay = true if @_DiffDay(event.end, event.start) != 0
 
     event
 
@@ -478,7 +476,7 @@ class Calendar extends SimpleModule
         $event = $(@_tpl.todo)
         $event.toggleClass 'completed', event.completed
         $event.find('.cb-done').prop('checked', event.completed)
-      else 
+      else
         $event = $(@_tpl.event)
 
       $event.attr("data-id", event.id).css
